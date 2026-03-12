@@ -3,31 +3,42 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 export default function SplitLoginCard() {
-    const router = useRouter()
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+        const router = useRouter();
+        const [email, setEmail] = useState("");
+        const [password, setPassword] = useState("");
+
+        // Redirect to dashboard if already logged in
+        useEffect(() => {
+            if (typeof window !== "undefined" && localStorage.getItem("user")) {
+                router.replace("/dashboard");
+            }
+        }, [router]);
 
     const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
         try {
             const res = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
-            })
+            });
             if (res.ok) {
-                router.push("/") // Redirect to dashboard
+                const data = await res.json();
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("user", JSON.stringify(data.user));
+                }
+                router.push("/dashboard");
             } else {
-                console.error("Login failed")
+                console.error("Login failed");
             }
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-    }
+    } 
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">

@@ -25,7 +25,7 @@ export default function Register() {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
         try {
             const res = await fetch("/api/auth/register", {
                 method: "POST",
@@ -33,14 +33,18 @@ export default function Register() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(formData),
-            })
+            });
             if (res.ok) {
-                router.push("/login")
+                const data = await res.json();
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("user", JSON.stringify(data.user));
+                }
+                router.push("/dashboard");
             } else {
-                console.error("Registration failed")
+                console.error("Registration failed");
             }
         } catch (error) {
-            console.error("An error occurred", error)
+            console.error("An error occurred", error);
         }
     }
 
