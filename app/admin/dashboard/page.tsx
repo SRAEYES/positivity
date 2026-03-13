@@ -102,8 +102,7 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
                 className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
             >
                 <div className="flex items-center justify-between mb-8">
@@ -117,23 +116,37 @@ export default function AdminDashboard() {
                         <AreaChart data={analytics.growthTrend}>
                             <defs>
                                 <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
+                                    <stop offset="5%" stopColor="#3F51B5" stopOpacity={0.4}/>
+                                    <stop offset="95%" stopColor="#3F51B5" stopOpacity={0}/>
                                 </linearGradient>
                             </defs>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
                             <XAxis 
                                 dataKey="date" 
                                 axisLine={false} 
                                 tickLine={false} 
-                                tick={{ fontSize: 10, fontWeight: 900, fill: 'currentColor', opacity: 0.2 }}
+                                tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B', opacity: 0.8 }}
                                 dy={10}
                             />
-                            <YAxis hide />
-                            <Tooltip 
-                                contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', fontSize: '10px', fontWeight: '900', color: '#fff' }}
-                                itemStyle={{ color: 'var(--accent)' }}
+                            <YAxis 
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B', opacity: 0.5 }}
                             />
-                            <Area type="monotone" dataKey="cumulative" stroke="var(--accent)" strokeWidth={4} fillOpacity={1} fill="url(#colorGrowth)" />
+                            <Tooltip 
+                                contentStyle={{ 
+                                    backgroundColor: '#000', 
+                                    border: 'none', 
+                                    borderRadius: '16px', 
+                                    fontSize: '11px', 
+                                    fontWeight: '900', 
+                                    color: '#fff',
+                                    padding: '12px 16px'
+                                }}
+                                itemStyle={{ color: '#fff' }}
+                                cursor={{ stroke: '#3F51B5', strokeWidth: 2 }}
+                            />
+                            <Area type="monotone" dataKey="cumulative" stroke="#3F51B5" strokeWidth={4} fillOpacity={1} fill="url(#colorGrowth)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
@@ -141,8 +154,7 @@ export default function AdminDashboard() {
 
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
                 className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
             >
                 <div className="flex items-center justify-between mb-8">
@@ -154,21 +166,35 @@ export default function AdminDashboard() {
                 <div className="h-[300px] w-full mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={analytics.financialTrend}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
                             <XAxis 
                                 dataKey="date" 
                                 axisLine={false} 
                                 tickLine={false} 
-                                tick={{ fontSize: 10, fontWeight: 900, fill: 'currentColor', opacity: 0.2 }}
+                                tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B', opacity: 0.8 }}
                                 dy={10}
                             />
-                            <YAxis hide />
+                            <YAxis 
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B', opacity: 0.5 }}
+                            />
                             <Tooltip 
-                                contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', fontSize: '10px', fontWeight: '900', color: '#fff' }}
+                                contentStyle={{ 
+                                    backgroundColor: '#000', 
+                                    border: 'none', 
+                                    borderRadius: '16px', 
+                                    fontSize: '11px', 
+                                    fontWeight: '900', 
+                                    color: '#fff',
+                                    padding: '12px 16px'
+                                }}
+                                itemStyle={{ color: '#fff' }}
                                 cursor={{ fill: 'rgba(0,0,0,0.05)' }}
                             />
-                            <Bar dataKey="amount" radius={[10, 10, 0, 0]}>
+                            <Bar dataKey="amount" radius={[10, 10, 0, 0]} barSize={40}>
                                 {analytics.financialTrend.map((entry: any, index: number) => (
-                                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? 'var(--accent)' : 'var(--secondary)'} />
+                                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#FF9933' : '#FF66CC'} />
                                 ))}
                             </Bar>
                         </BarChart>
@@ -176,6 +202,7 @@ export default function AdminDashboard() {
                 </div>
             </motion.div>
           </div>
+
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Recent Enrollments */}
