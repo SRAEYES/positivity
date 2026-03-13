@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, BookOpen, GraduationCap, IndianRupee, Plus, Settings, Bell, Search, Loader2, ArrowUpRight, TrendingUp } from "lucide-react";
+import { Users, BookOpen, GraduationCap, IndianRupee, Plus, Settings, Bell, Search, Loader2, ArrowUpRight, TrendingUp, BarChart3, LineChart as LineIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -14,19 +15,24 @@ export default function AdminDashboard() {
     revenue: 0,
   });
   const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [analytics, setAnalytics] = useState<any>({ growthTrend: [], financialTrend: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [statsRes, enrollRes] = await Promise.all([
+        const [statsRes, enrollRes, analyticsRes] = await Promise.all([
           fetch("/api/admin/stats"),
-          fetch("/api/admin/enrollments")
+          fetch("/api/admin/enrollments"),
+          fetch("/api/admin/analytics")
         ]);
         const statsData = await statsRes.json();
         const enrollData = await enrollRes.json();
+        const analyticsData = await analyticsRes.json();
+
         setStats(statsData);
         setEnrollments(enrollData.enrollments || []);
+        setAnalytics(analyticsData);
       } catch (e) {
         console.error("Fetch error:", e);
       }
@@ -93,11 +99,90 @@ export default function AdminDashboard() {
             <StatCard label="Dakshina" value={stats.revenue} icon={<IndianRupee />} isCurrency color="emerald" />
           </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
+            >
+                <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
+                        <TrendingUp className="w-5 h-5 text-accent" /> Seeker Growth
+                    </h3>
+                    <div className="text-[10px] font-black uppercase tracking-widest opacity-20">Historical Flow</div>
+                </div>
+                <div className="h-[300px] w-full mt-4">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={analytics.growthTrend}>
+                            <defs>
+                                <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
+                                    <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
+                            <XAxis 
+                                dataKey="date" 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ fontSize: 10, fontWeight: 900, fill: 'currentColor', opacity: 0.2 }}
+                                dy={10}
+                            />
+                            <YAxis hide />
+                            <Tooltip 
+                                contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', fontSize: '10px', fontWeight: '900', color: '#fff' }}
+                                itemStyle={{ color: 'var(--accent)' }}
+                            />
+                            <Area type="monotone" dataKey="cumulative" stroke="var(--accent)" strokeWidth={4} fillOpacity={1} fill="url(#colorGrowth)" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            </motion.div>
+
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
+            >
+                <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
+                        <BarChart3 className="w-5 h-5 text-emerald-500" /> Financial Flow
+                    </h3>
+                    <div className="text-[10px] font-black uppercase tracking-widest opacity-20">Dakshina Stream</div>
+                </div>
+                <div className="h-[300px] w-full mt-4">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={analytics.financialTrend}>
+                            <XAxis 
+                                dataKey="date" 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ fontSize: 10, fontWeight: 900, fill: 'currentColor', opacity: 0.2 }}
+                                dy={10}
+                            />
+                            <YAxis hide />
+                            <Tooltip 
+                                contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '12px', fontSize: '10px', fontWeight: '900', color: '#fff' }}
+                                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+                            />
+                            <Bar dataKey="amount" radius={[10, 10, 0, 0]}>
+                                {analytics.financialTrend.map((entry: any, index: number) => (
+                                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? 'var(--accent)' : 'var(--secondary)'} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </motion.div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Recent Enrollments */}
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 className="lg:col-span-2 bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
             >
                 <div className="flex items-center justify-between mb-10 px-4">
@@ -151,7 +236,8 @@ export default function AdminDashboard() {
             <div className="space-y-10">
                 <motion.div 
                     initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
                     className="bg-accent p-8 rounded-[3rem] text-white shadow-xl shadow-accent/30 relative overflow-hidden"
                 >
                     <TrendingUp className="absolute -right-4 -bottom-4 w-40 h-40 opacity-10 rotate-12" />
@@ -167,7 +253,8 @@ export default function AdminDashboard() {
 
                 <motion.div 
                     initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.1 }}
                     className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
                 >
