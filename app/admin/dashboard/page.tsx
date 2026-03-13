@@ -84,6 +84,13 @@ export default function AdminDashboard() {
                 <BookOpen className="w-6 h-6" />
             </button>
             <button 
+                onClick={() => router.push("/admin/notifications")}
+                className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-accent hover:border-accent/40 transition-all font-black"
+                title="Manifest Update"
+            >
+                <Bell className="w-6 h-6" />
+            </button>
+            <button 
                 onClick={() => router.push("/logout")}
                 className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-red-500 hover:border-red-500/40 transition-all"
                 title="Depart Portal"

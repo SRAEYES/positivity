@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, BookOpen, GraduationCap, User, LogOut, ChevronLeft, Sun } from "lucide-react";
+import { LayoutDashboard, BookOpen, GraduationCap, User, LogOut, ChevronLeft, Sun, Bell } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function DashboardNav() {
@@ -15,6 +15,7 @@ export default function DashboardNav() {
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/courses", label: "Courses", icon: BookOpen },
     { href: "/dashboard/enrolled", label: "My Courses", icon: GraduationCap },
+    { href: "/dashboard/notifications", label: "Updates", icon: Bell },
     { href: "/dashboard/profile", label: "Profile", icon: User },
   ];
 
