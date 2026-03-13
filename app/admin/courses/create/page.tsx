@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Sparkles, Plus, ArrowLeft, Loader2, Image as ImageIcon, Calendar, Clock, MessageCircle, Globe, AlignLeft } from "lucide-react";
+import { Sparkles, Plus, ArrowLeft, Loader2, Image as ImageIcon, Calendar, Clock, MessageCircle, Globe, AlignLeft, LogOut } from "lucide-react";
 
 export default function CreateCoursePage() {
   const router = useRouter();
@@ -53,12 +53,20 @@ export default function CreateCoursePage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-8 md:p-12">
       
       <div className="max-w-4xl mx-auto mb-16">
-        <button 
-          onClick={() => router.back()}
-          className="flex items-center gap-2 text-foreground/40 text-[10px] font-black uppercase tracking-widest mb-6 hover:text-accent transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" /> Go Back
-        </button>
+        <div className="flex items-center justify-between mb-6">
+          <button 
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-foreground/40 text-[10px] font-black uppercase tracking-widest hover:text-accent transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Go Back
+          </button>
+          <button 
+            onClick={() => router.push("/logout")}
+            className="flex items-center gap-2 text-foreground/40 text-[10px] font-black uppercase tracking-widest hover:text-red-500 transition-colors"
+          >
+            <LogOut className="w-4 h-4" /> Finalize Session
+          </button>
+        </div>
         <motion.h1 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

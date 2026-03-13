@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, Plus, Edit3, Trash2, Search, ArrowLeft, Loader2, Sparkles, Filter, MoreVertical } from "lucide-react";
+import { BookOpen, Plus, Edit3, Trash2, Search, ArrowLeft, Loader2, Sparkles, Filter, MoreVertical, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminCourses() {
@@ -58,14 +58,25 @@ export default function AdminCourses() {
           <p className="text-foreground/40 font-medium mt-2">Curate and manage the sacred syllabus.</p>
         </div>
 
-        <motion.button 
+        <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            onClick={() => window.location.href = "/admin/courses/create"}
-            className="flex items-center gap-3 px-8 h-14 bg-accent text-white rounded-2xl font-black shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            className="flex gap-4"
         >
-            <Plus className="w-5 h-5" /> Manifest New Path
-        </motion.button>
+            <button 
+                onClick={() => window.location.href = "/admin/courses/create"}
+                className="flex items-center gap-3 px-8 h-14 bg-accent text-white rounded-2xl font-black shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+                <Plus className="w-5 h-5" /> Manifest New Path
+            </button>
+            <button 
+                onClick={() => window.location.href = '/logout'}
+                className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-red-500 hover:border-red-500/40 transition-all font-black text-xs px-4"
+                title="Depart Portal"
+            >
+                <LogOut className="w-5 h-5 mr-2" /> Logout
+            </button>
+        </motion.div>
       </div>
 
       <div className="max-w-6xl mx-auto">

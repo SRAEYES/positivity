@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, BookOpen, GraduationCap, IndianRupee, Plus, Settings, Bell, Search, Loader2, ArrowUpRight, TrendingUp, BarChart3, LineChart as LineIcon } from "lucide-react";
+import { Users, BookOpen, GraduationCap, IndianRupee, Plus, Settings, Bell, Search, Loader2, ArrowUpRight, TrendingUp, BarChart3, LineChart as LineIcon, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
@@ -79,8 +79,16 @@ export default function AdminDashboard() {
             <button 
                 onClick={() => router.push("/admin/courses")}
                 className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-accent hover:border-accent/40 transition-all"
+                title="Wisdom Archives"
             >
                 <BookOpen className="w-6 h-6" />
+            </button>
+            <button 
+                onClick={() => router.push("/logout")}
+                className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-red-500 hover:border-red-500/40 transition-all"
+                title="Depart Portal"
+            >
+                <LogOut className="w-6 h-6" />
             </button>
         </motion.div>
       </div>
