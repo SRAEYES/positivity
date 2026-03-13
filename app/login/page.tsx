@@ -11,10 +11,15 @@ export default function SplitLoginCard() {
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
 
-        // Redirect to dashboard if already logged in
+        // Redirect to correct dashboard if already logged in
         useEffect(() => {
             if (typeof window !== "undefined" && localStorage.getItem("user")) {
-                router.replace("/dashboard");
+                const user = JSON.parse(localStorage.getItem("user")!);
+                if (user.role === "admin") {
+                    router.replace("/admin/dashboard");
+                } else {
+                    router.replace("/dashboard");
+                }
             }
         }, [router]);
 
@@ -30,8 +35,12 @@ export default function SplitLoginCard() {
                 const data = await res.json();
                 if (typeof window !== "undefined") {
                   localStorage.setItem("user", JSON.stringify(data.user));
+                  if (data.user.role === "admin") {
+                    router.push("/admin/dashboard");
+                  } else {
+                    router.push("/dashboard");
+                  }
                 }
-                router.push("/dashboard");
             } else {
                 console.error("Login failed");
             }

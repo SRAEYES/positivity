@@ -1,65 +1,150 @@
-import Image from "next/image";
+"use client";
+
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-yellow-50 dark:from-black dark:via-zinc-900 dark:to-black">
+
+      {/* Navbar */}
+      <nav className="flex justify-between items-center px-10 py-6 max-w-7xl mx-auto">
+        <h1 className="text-2xl font-bold text-orange-700 dark:text-orange-400">
+          DharmaVeda
+        </h1>
+
+        <div className="flex gap-6">
+          <button
+            onClick={() => router.push("/login")}
+            className="text-gray-700 dark:text-gray-300 hover:text-orange-600"
+          >
+            Login
+          </button>
+
+          <button
+            onClick={() => router.push("/register")}
+            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700"
+          >
+            Get Started
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="max-w-6xl mx-auto px-8 py-20 text-center">
+
+        <h1 className="text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+          Discover the Wisdom of
+          <span className="text-orange-600"> Sanatana Dharma</span>
+        </h1>
+
+        <p className="mt-6 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          Learn ancient spiritual knowledge, Sanskrit wisdom, meditation,
+          philosophy, and Vedic culture through structured courses designed
+          for the modern world.
+        </p>
+
+        <div className="flex justify-center gap-6 mt-10">
+
+          <button
+            onClick={() => router.push("/courses")}
+            className="bg-orange-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-orange-700"
+          >
+            Explore Courses
+          </button>
+
+          <button
+            onClick={() => router.push("/register")}
+            className="border border-orange-600 text-orange-600 px-6 py-3 rounded-lg text-lg hover:bg-orange-50"
+          >
+            Start Learning
+          </button>
+
+        </div>
+
+      </section>
+
+      {/* Features Section */}
+
+      <section className="max-w-6xl mx-auto px-8 py-16 grid md:grid-cols-3 gap-10">
+
+        <div className="bg-white dark:bg-zinc-800 p-8 rounded-xl shadow-lg text-center">
+          <h3 className="text-xl font-semibold text-orange-600">
+            Vedic Knowledge
+          </h3>
+          <p className="mt-3 text-gray-600 dark:text-gray-300">
+            Learn timeless wisdom from Vedas, Upanishads, and ancient Indian
+            philosophy in a structured way.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="bg-white dark:bg-zinc-800 p-8 rounded-xl shadow-lg text-center">
+          <h3 className="text-xl font-semibold text-orange-600">
+            Sanskrit Learning
+          </h3>
+          <p className="mt-3 text-gray-600 dark:text-gray-300">
+            Understand the divine language of Sanskrit and unlock deeper
+            meanings of sacred texts.
+          </p>
         </div>
-      </main>
+
+        <div className="bg-white dark:bg-zinc-800 p-8 rounded-xl shadow-lg text-center">
+          <h3 className="text-xl font-semibold text-orange-600">
+            Spiritual Growth
+          </h3>
+          <p className="mt-3 text-gray-600 dark:text-gray-300">
+            Practice meditation, dharma-based living, and daily spiritual
+            discipline guided by ancient traditions.
+          </p>
+        </div>
+
+      </section>
+
+      {/* About Section */}
+
+      <section className="max-w-5xl mx-auto px-8 py-16 text-center">
+
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+          A Global Platform for Eternal Wisdom
+        </h2>
+
+        <p className="mt-6 text-gray-600 dark:text-gray-300 leading-relaxed">
+          Our mission is to bring the eternal teachings of Sanatana Dharma to
+          the world. Through structured courses, spiritual guidance, and
+          authentic knowledge from Indian traditions, we aim to help learners
+          reconnect with timeless wisdom for modern life.
+        </p>
+
+      </section>
+
+      {/* CTA */}
+
+      <section className="bg-orange-600 text-white py-16 text-center">
+
+        <h2 className="text-3xl font-bold">
+          Begin Your Spiritual Journey Today
+        </h2>
+
+        <p className="mt-4 text-lg opacity-90">
+          Join thousands of learners discovering ancient wisdom.
+        </p>
+
+        <button
+          onClick={() => router.push("/register")}
+          className="mt-6 bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100"
+        >
+          Join Now
+        </button>
+
+      </section>
+
+      {/* Footer */}
+
+      <footer className="text-center py-8 text-gray-500 dark:text-gray-400">
+        © {new Date().getFullYear()} DharmaVeda. All rights reserved.
+      </footer>
+
     </div>
   );
 }

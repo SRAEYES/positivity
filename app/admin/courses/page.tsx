@@ -53,6 +53,7 @@ export default function AdminCourses() {
 
               <button
                 className="bg-yellow-500 text-white px-3 py-1 rounded"
+                onClick={() => window.location.href = `/admin/courses/edit/${course.id}`}
               >
                 Edit
               </button>

@@ -13,6 +13,7 @@ export default function AdminDashboard() {
     totalEnrollments: 0,
     revenue: 0,
   });
+  const [enrollments, setEnrollments] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchStats() {
@@ -20,8 +21,13 @@ export default function AdminDashboard() {
       const data = await res.json();
       setStats(data);
     }
-
+    async function fetchEnrollments() {
+      const res = await fetch("/api/admin/enrollments");
+      const data = await res.json();
+      setEnrollments(data.enrollments || []);
+    }
     fetchStats();
+    fetchEnrollments();
   }, []);
 
   return (
@@ -59,22 +65,49 @@ export default function AdminDashboard() {
 
       {/* Actions */}
 
-      <div className="flex gap-6">
-
+      <div className="flex gap-6 mb-10">
         <button
           onClick={() => router.push("/admin/courses/create")}
-          className="bg-blue-600 text-white px-6 py-3 rounded"
+          className="bg-blue-600 text-white px-6 py-3 rounded shadow-lg hover:bg-blue-700 transition"
         >
           Add Course
         </button>
-
         <button
           onClick={() => router.push("/admin/courses")}
-          className="bg-green-600 text-white px-6 py-3 rounded"
+          className="bg-green-600 text-white px-6 py-3 rounded shadow-lg hover:bg-green-700 transition"
         >
           Modify Courses
         </button>
+        <button
+          className="bg-purple-600 text-white px-6 py-3 rounded shadow-lg hover:bg-purple-700 transition"
+        >
+          Send Notification
+        </button>
+      </div>
 
+      {/* Enrollments Table */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded shadow mb-10">
+        <h2 className="text-xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Student Enrollments</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="bg-indigo-100 dark:bg-indigo-900">
+                <th className="px-4 py-2 text-left">Student</th>
+                <th className="px-4 py-2 text-left">Course</th>
+                <th className="px-4 py-2 text-left">Enrolled At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {enrollments.map((enroll) => (
+                <tr key={enroll.id} className="border-b">
+                  <td className="px-4 py-2">{enroll.user?.name || enroll.user?.email}</td>
+                  <td className="px-4 py-2">{enroll.course?.title}</td>
+                  <td className="px-4 py-2">{enroll.createdAt ? new Date(enroll.createdAt).toLocaleString() : ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
