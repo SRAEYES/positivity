@@ -120,10 +120,10 @@ export default function ProfilePage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter mb-4 italic"
             >
-                {user.name || "Seeker of Truth"}
+                {user.name}
             </motion.h1>
             <p className="text-primary font-black uppercase tracking-[0.3em] text-sm opacity-60">
-                {user.role || "student"} of Dharma
+                Authorized {user.role}
             </p>
         </div>
       </div>

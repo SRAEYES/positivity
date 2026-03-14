@@ -137,7 +137,7 @@ export default function AdminCourses() {
                             <div className="flex items-center gap-4">
                                 <div className="hidden lg:block px-8 py-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl text-center">
                                     <p className="text-[8px] font-black uppercase tracking-widest opacity-30 mb-1">Initiates</p>
-                                    <p className="text-sm font-black text-foreground">124 Seeker</p>
+                                    <p className="text-sm font-black text-foreground">{course._count?.enrollments || 0} Seeker</p>
                                 </div>
                                 <div className="flex gap-3">
                                     <button

@@ -64,22 +64,22 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-32 text-center md:text-left flex flex-col md:flex-row items-center gap-16">
+      <section className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-16 pb-24 text-center md:text-left flex flex-col md:flex-row items-center gap-12">
         
         <motion.div 
           initial="hidden"
           animate="visible"
           variants={containerVariants}
-          className="md:w-1/2"
+          className="md:w-1/2 relative z-20 w-full"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/30 text-secondary-foreground text-sm font-bold mb-6">
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 text-secondary-foreground text-xs md:text-sm font-bold mb-6 border border-secondary/20">
             <Sparkles className="w-4 h-4" />
             <span>Discover Ancient Truths</span>
           </motion.div>
           
           <motion.h1 
             variants={itemVariants}
-            className="text-6xl md:text-8xl font-black leading-[0.9] text-foreground mb-8"
+            className="text-4xl md:text-8xl font-black leading-tight md:leading-[0.9] text-foreground mb-8 drop-shadow-sm"
           >
             Awaken the <br />
             <span className="text-primary italic">Eternal Spirit</span> <br />
@@ -88,7 +88,7 @@ export default function Home() {
 
           <motion.p 
             variants={itemVariants}
-            className="text-xl text-foreground/60 max-w-xl mb-10 leading-relaxed"
+            className="text-lg md:text-xl text-foreground/70 max-w-xl mb-10 leading-relaxed font-medium mx-auto md:mx-0"
           >
             Experience the profound wisdom of Sanatana Dharma through interactive courses in Sanskrit, Vedic philosophy, and spiritual discipline.
           </motion.p>
@@ -96,7 +96,7 @@ export default function Home() {
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <button
               onClick={() => router.push("/courses")}
-              className="bg-accent text-white px-10 py-5 rounded-3xl text-lg font-black shadow-2xl shadow-accent/20 hover:shadow-accent/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
+              className="bg-accent text-white px-8 md:px-10 py-4 md:py-5 rounded-3xl text-lg font-black shadow-2xl shadow-accent/20 hover:shadow-accent/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
             >
               Explore Wisdom <ArrowRight className="w-5 h-5" />
             </button>
@@ -120,32 +120,32 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="md:w-1/2 relative"
+          className="w-full md:w-1/2 relative mt-12 md:mt-0"
         >
-          <div className="w-full aspect-square bg-gradient-to-tr from-primary/20 via-secondary/20 to-accent/20 rounded-[4rem] relative overflow-hidden shadow-2xl">
+          <div className="w-full aspect-square bg-gradient-to-tr from-primary/10 via-secondary/10 to-accent/10 rounded-[3rem] md:rounded-[4rem] relative overflow-hidden shadow-2xl border border-white/10">
             <img 
               src="https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
               alt="Meditation and Wisdom" 
-              className="w-full h-full object-cover mix-blend-overlay opacity-80"
+              className="w-full h-full object-cover opacity-90 transition-transform duration-1000 hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
             
             {/* Floating UI element */}
             <motion.div 
-              animate={{ y: [0, -20, 0] }}
+              animate={{ y: [0, -10, 0] }}
               transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="absolute bottom-12 left-12 right-12 bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl text-left"
+              className="absolute bottom-6 left-6 right-6 md:bottom-12 md:left-12 md:right-12 bg-white/10 backdrop-blur-xl border border-white/20 p-4 md:p-6 rounded-[2rem] md:rounded-3xl text-left"
             >
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
-                  <Star className="w-5 h-5 fill-current" />
+              <div className="flex items-center gap-3 md:gap-4 mb-3">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0">
+                  <Star className="w-4 h-4 md:w-5 md:h-5 fill-current" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white">Featured Course</h4>
-                  <p className="text-white/60 text-xs">Bhagavad Gita Masterclass</p>
+                  <h4 className="font-bold text-white text-sm md:text-base">Featured Course</h4>
+                  <p className="text-white/60 text-[10px] md:text-xs">Bhagavad Gita Masterclass</p>
                 </div>
               </div>
-              <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 md:h-2 bg-white/10 rounded-full overflow-hidden">
                 <div className="w-[85%] h-full bg-primary"></div>
               </div>
             </motion.div>

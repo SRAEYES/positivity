@@ -60,12 +60,6 @@ export default function CreateCoursePage() {
           >
             <ArrowLeft className="w-4 h-4" /> Go Back
           </button>
-          <button 
-            onClick={() => router.push("/logout")}
-            className="flex items-center gap-2 text-foreground/40 text-[10px] font-black uppercase tracking-widest hover:text-red-500 transition-colors"
-          >
-            <LogOut className="w-4 h-4" /> Finalize Session
-          </button>
         </div>
         <motion.h1 
           initial={{ opacity: 0, y: 10 }}

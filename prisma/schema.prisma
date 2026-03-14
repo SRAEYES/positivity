@@ -21,6 +21,8 @@ model User {
   createdAt   DateTime     @default(now())
   role        String       @default("student")
   enrollments Enrollment[]
+  japaGoals   JapaGoal[]
+  journals    SpiritualJournal[]
 }
 
 model Course {
@@ -70,3 +72,31 @@ model Notification {
   createdAt DateTime @default(now())
 }
 
+model JapaGoal {
+  id               Int            @id @default(autoincrement())
+  userId           Int
+  mantraName       String
+  dailyRoundsGoal  Int            @default(16)
+  theme            String?        @default("krishna")
+  createdAt        DateTime       @default(now())
+  user             User           @relation(fields: [userId], references: [id])
+  progress         JapaProgress[]
+}
+
+model JapaProgress {
+  id              Int      @id @default(autoincrement())
+  goalId          Int
+  roundsCompleted Int
+  date            DateTime @default(now())
+  goal            JapaGoal @relation(fields: [goalId], references: [id])
+}
+
+model SpiritualJournal {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  bookName   String
+  pagesRead  Int
+  notes      String?
+  date       DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}

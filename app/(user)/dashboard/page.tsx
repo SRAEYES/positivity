@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, GraduationCap, Sparkles, Sun, Star, ArrowRight, Heart, Zap } from "lucide-react";
+import { BookOpen, GraduationCap, Sparkles, Sun, Star, ArrowRight, Heart, Zap, LayoutDashboard } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Dashboard() {
@@ -46,7 +46,6 @@ export default function Dashboard() {
       
       {/* Premium Spiritual Greeting Header */}
       <div className="relative overflow-hidden pt-20 pb-40 px-8">
-        {/* Background Gradients */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-100 via-amber-50 to-yellow-50 dark:from-orange-950/40 dark:via-zinc-900 dark:to-zinc-950 z-0"></div>
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full -mr-48 -mt-48 z-10"></div>
         
@@ -75,41 +74,20 @@ export default function Dashboard() {
               </div>
             </motion.div>
           </motion.div>
-          
+
           <motion.div 
-            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="hidden md:flex flex-col gap-6"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-48 h-48 bg-primary/10 rounded-[3rem] p-1 shadow-2xl border-4 border-primary/20 flex items-center justify-center"
           >
-            <div className="p-8 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-3xl rounded-[3rem] border border-white/60 dark:border-white/10 shadow-2xl flex items-center gap-6">
-               <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20">
-                  <Star className="text-white w-8 h-8 fill-current" />
-               </div>
-               <div>
-                  <div className="text-xs font-black uppercase tracking-widest opacity-40">Sadhana Level</div>
-                  <div className="text-3xl font-black text-primary">Advanced Seeker</div>
-               </div>
-            </div>
-            
-            <div className="p-8 bg-accent/90 backdrop-blur-3xl rounded-[3rem] text-white shadow-2xl flex items-center gap-6">
-               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
-                  <Zap className="text-white w-8 h-8 fill-current" />
-               </div>
-               <div>
-                  <div className="text-xs font-black uppercase tracking-widest opacity-60">Insight Points</div>
-                  <div className="text-3xl font-black">1,240</div>
-               </div>
-            </div>
+             <Star className="text-primary w-24 h-24 opacity-30 fill-current" />
           </motion.div>
         </div>
       </div>
 
       {/* Main Content Area */}
       <div className="max-w-6xl mx-auto w-full px-6 -mt-24 relative z-30">
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {/* Explore Courses Card */}
           <motion.div 
             whileHover={{ y: -10 }}
@@ -119,12 +97,8 @@ export default function Dashboard() {
             <div className="w-20 h-20 bg-primary/10 rounded-3xl mb-8 flex items-center justify-center group-hover:bg-primary transition-all duration-500">
               <BookOpen className="w-10 h-10 text-primary group-hover:text-white transition-colors" />
             </div>
-            <h2 className="text-3xl font-black mb-4 text-foreground group-hover:text-primary transition-colors">
-              Divine Wisdom
-            </h2>
-            <p className="text-foreground/60 mb-8 leading-relaxed text-lg">
-              Unlock the secrets of the Vedas, Upanishads, and the Bhagavad Gita through our structured masterclasses.
-            </p>
+            <h2 className="text-3xl font-black mb-4 group-hover:text-primary transition-colors">Divine Wisdom</h2>
+            <p className="text-foreground/60 mb-8 leading-relaxed text-lg font-medium">Unlock the secrets of the masterclasses.</p>
             <div className="mt-auto inline-flex items-center gap-3 px-6 py-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl font-black text-primary group-hover:bg-primary group-hover:text-white transition-all">
               Browse Wisdom <ArrowRight className="w-5 h-5" />
             </div>
@@ -139,65 +113,30 @@ export default function Dashboard() {
             <div className="w-20 h-20 bg-secondary/10 rounded-3xl mb-8 flex items-center justify-center group-hover:bg-secondary transition-all duration-500">
               <GraduationCap className="w-10 h-10 text-secondary group-hover:text-white transition-colors" />
             </div>
-            <h2 className="text-3xl font-black mb-4 text-foreground group-hover:text-secondary transition-colors">
-              Inner Journey
-            </h2>
-            <p className="text-foreground/60 mb-8 leading-relaxed text-lg">
-              Continue your spiritual evolution. Access your ongoing courses, worksheets, and meditative practices.
-            </p>
+            <h2 className="text-3xl font-black mb-4 group-hover:text-secondary transition-colors">Inner Journey</h2>
+            <p className="text-foreground/60 mb-8 leading-relaxed text-lg font-medium">Continue your spiritual evolution.</p>
             <div className="mt-auto inline-flex items-center gap-3 px-6 py-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl font-black text-secondary group-hover:bg-secondary group-hover:text-white transition-all">
               Resume Sadhana <ArrowRight className="w-5 h-5" />
             </div>
           </motion.div>
 
-          {/* Daily Goal / Sadhana Tracker */}
+          {/* Sadhana Nexus Entry */}
           <motion.div 
             whileHover={{ y: -10 }}
-            className="bg-accent p-10 rounded-[3.5rem] shadow-2xl text-white flex flex-col min-h-[400px] relative overflow-hidden shadow-accent/20"
+            onClick={() => router.push("/dashboard/sadhana")}
+            className="group cursor-pointer bg-white dark:bg-zinc-900 p-10 rounded-[3.5rem] shadow-2xl hover:shadow-accent/20 transition-all border border-transparent hover:border-accent/40 flex flex-col items-start min-h-[400px]"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
-            
-            <div className="w-16 h-16 bg-white/20 rounded-2xl mb-8 flex items-center justify-center">
-              <Heart className="w-8 h-8 text-white animate-pulse" />
+            <div className="w-20 h-20 bg-accent/10 rounded-3xl mb-8 flex items-center justify-center group-hover:bg-accent transition-all duration-500">
+              <LayoutDashboard className="w-10 h-10 text-accent group-hover:text-white transition-colors" />
             </div>
-            <h2 className="text-3xl font-black mb-4">Daily Sadhana</h2>
-            <p className="opacity-80 mb-8 text-lg font-medium">
-              Daily discipline is the key to liberation. Stay consistent with your practices.
-            </p>
-            
-            <div className="space-y-4 mb-8">
-               <div className="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/10">
-                  <div className="w-3 h-3 rounded-full bg-primary animate-ping"></div>
-                  <span className="font-bold">Journey Progress: {user?.progress || 0}%</span>
-               </div>
+            <h2 className="text-3xl font-black mb-4 group-hover:text-accent transition-colors">Sadhana Nexus</h2>
+            <p className="text-foreground/60 mb-8 leading-relaxed text-lg font-medium">Track Mantra Japa & Spiritual Journaling.</p>
+            <div className="mt-auto inline-flex items-center gap-3 px-6 py-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl font-black text-accent group-hover:bg-accent group-hover:text-white transition-all">
+              Enter Laboratory <ArrowRight className="w-5 h-5" />
             </div>
-
-            <button 
-                onClick={async () => {
-                   try {
-                       const next = Math.min(100, (user?.progress || 0) + 5);
-                       const res = await fetch("/api/enroll/progress", {
-                           method: "POST",
-                           body: JSON.stringify({ userId: user.id, courseId: 1, progress: next }) // Hardcoded for demo/first course
-                       });
-                       if (res.ok) {
-                           const newUser = { ...user, progress: next };
-                           setUser(newUser);
-                           localStorage.setItem("user", JSON.stringify(newUser));
-                           alert("Sadhana Recorded. You are ascending!");
-                       }
-                   } catch (e) { console.error(e); }
-                }}
-                className="mt-auto w-full py-4 bg-white text-accent rounded-[2rem] font-black hover:scale-[1.02] transition-transform shadow-xl active:scale-[0.98]"
-            >
-               Update Progress
-            </button>
           </motion.div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

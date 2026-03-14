@@ -4,6 +4,11 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   try {
     const courses = await prisma.course.findMany({
+      include: {
+        _count: {
+          select: { enrollments: true }
+        }
+      },
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json({ courses });
