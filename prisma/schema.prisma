@@ -41,6 +41,7 @@ model Enrollment {
   userId    Int
   courseId  Int
   paid      Boolean  @default(false)
+  progress  Int      @default(0)
   createdAt DateTime @default(now())
   course    Course   @relation(fields: [courseId], references: [id])
   user      User     @relation(fields: [userId], references: [id])

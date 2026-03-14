@@ -130,6 +130,26 @@
 }
 
 
+  /* Shared Values */
+  --radius: 1rem;
+  
+  /* RGB Variants for Glows */
+  --primary-rgb: 244, 196, 48;
+  --secondary-rgb: 255, 102, 204;
+}
+
+@layer utilities {
+  .glow-saffron {
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
+  }
+  .glow-lotus {
+    box-shadow: 0 0 25px rgba(var(--secondary-rgb), 0.4);
+  }
+  .shadow-spiritual {
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

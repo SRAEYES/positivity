@@ -71,10 +71,10 @@ export default function AdminCourses() {
             </button>
             <button 
                 onClick={() => window.location.href = '/logout'}
-                className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-red-500 hover:border-red-500/40 transition-all font-black text-xs px-4"
+                className="flex items-center gap-2 text-foreground/40 text-[10px] font-black uppercase tracking-widest hover:text-red-500 transition-colors"
                 title="Depart Portal"
             >
-                <LogOut className="w-5 h-5 mr-2" /> Logout
+                <LogOut className="w-4 h-4" /> Logout Session
             </button>
         </motion.div>
       </div>

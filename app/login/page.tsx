@@ -130,10 +130,16 @@ export default function SplitLoginCard() {
                         </Button>
                     </form>
 
-                    <div className="mt-8 text-center bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-2xl">
+                    <div className="mt-8 text-center bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-3xl border border-white dark:border-white/5 shadow-inner">
                         <p className="text-sm font-medium text-foreground/60">
                             New seeker? {" "}
-                            <a href="/register" className="text-secondary font-black hover:underline underline-offset-4">Create Your Path</a>
+                            <motion.a 
+                                whileHover={{ scale: 1.05 }}
+                                href="/register" 
+                                className="inline-block px-4 py-1 rounded-full bg-secondary/10 text-secondary font-black hover:underline underline-offset-4 glow-lotus"
+                            >
+                                Create Your Path
+                            </motion.a>
                         </p>
                     </div>
                 </div>

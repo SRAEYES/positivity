@@ -134,7 +134,7 @@ export default function Dashboard() {
           <motion.div 
             whileHover={{ y: -10 }}
             onClick={() => router.push("/dashboard/enrolled")}
-            className="group cursor-pointer bg-white dark:bg-zinc-800 p-10 rounded-[3.5rem] shadow-2xl hover:shadow-secondary/10 transition-all border border-transparent hover:border-secondary/20 flex flex-col items-start min-h-[400px]"
+            className="group cursor-pointer bg-white dark:bg-zinc-800 p-10 rounded-[3.5rem] shadow-2xl hover:shadow-secondary/20 transition-all border border-transparent hover:border-secondary/40 flex flex-col items-start min-h-[400px] glow-lotus"
           >
             <div className="w-20 h-20 bg-secondary/10 rounded-3xl mb-8 flex items-center justify-center group-hover:bg-secondary transition-all duration-500">
               <GraduationCap className="w-10 h-10 text-secondary group-hover:text-white transition-colors" />
@@ -150,10 +150,10 @@ export default function Dashboard() {
             </div>
           </motion.div>
 
-          {/* Daily Goal / Sadhana Tracker (Place-holder for now) */}
+          {/* Daily Goal / Sadhana Tracker */}
           <motion.div 
             whileHover={{ y: -10 }}
-            className="bg-accent p-10 rounded-[3.5rem] shadow-2xl text-white flex flex-col min-h-[400px] relative overflow-hidden"
+            className="bg-accent p-10 rounded-[3.5rem] shadow-2xl text-white flex flex-col min-h-[400px] relative overflow-hidden shadow-accent/20"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
             
@@ -168,15 +168,28 @@ export default function Dashboard() {
             <div className="space-y-4 mb-8">
                <div className="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/10">
                   <div className="w-3 h-3 rounded-full bg-primary animate-ping"></div>
-                  <span className="font-bold">Next Meditation: 6:00 PM</span>
-               </div>
-               <div className="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/10 opacity-60">
-                  <div className="w-3 h-3 rounded-full bg-zinc-400"></div>
-                  <span className="font-bold">Morning Chanting: Done</span>
+                  <span className="font-bold">Journey Progress: {user?.progress || 0}%</span>
                </div>
             </div>
 
-            <button className="mt-auto w-full py-4 bg-white text-accent rounded-[2rem] font-black hover:scale-[1.02] transition-transform shadow-xl">
+            <button 
+                onClick={async () => {
+                   try {
+                       const next = Math.min(100, (user?.progress || 0) + 5);
+                       const res = await fetch("/api/enroll/progress", {
+                           method: "POST",
+                           body: JSON.stringify({ userId: user.id, courseId: 1, progress: next }) // Hardcoded for demo/first course
+                       });
+                       if (res.ok) {
+                           const newUser = { ...user, progress: next };
+                           setUser(newUser);
+                           localStorage.setItem("user", JSON.stringify(newUser));
+                           alert("Sadhana Recorded. You are ascending!");
+                       }
+                   } catch (e) { console.error(e); }
+                }}
+                className="mt-auto w-full py-4 bg-white text-accent rounded-[2rem] font-black hover:scale-[1.02] transition-transform shadow-xl active:scale-[0.98]"
+            >
                Update Progress
             </button>
           </motion.div>
