@@ -99,11 +99,30 @@ export default function CreateCoursePage() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Thumbnail URL</Label>
+                        <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">
+                            Thumbnail URL
+                        </Label>
                         <div className="relative">
                             <ImageIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 opacity-20" />
-                            <Input name="thumbnail" value={form.thumbnail} onChange={handleChange} className="h-14 pl-14 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-2xl font-bold" placeholder="https://images.unsplash.com/..." required />
+                            <Input
+                                name="thumbnail"
+                                value={form.thumbnail}
+                                onChange={handleChange}
+                                className="h-14 pl-14 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-2xl font-bold"
+                                placeholder="https://images.unsplash.com/..."
+                                required
+                            />
                         </div>
+
+                        {form.thumbnail && (
+                            <div className="mt-3 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+                                <img
+                                    src={form.thumbnail}
+                                    alt="Thumbnail preview"
+                                    className="w-full h-48 object-cover"
+                                />
+                            </div>
+                        )}
                     </div>
                     <div className="space-y-2">
                         <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Deep Description</Label>
