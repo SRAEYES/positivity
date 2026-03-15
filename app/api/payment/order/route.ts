@@ -37,14 +37,19 @@ export async function POST(req: Request) {
 
     let enrollment;
     if (existing) {
-      // Reuse existing pending enrollment, update payment with new order ID
+      // Reuse existing pending enrollment, update or create payment with new order ID
       enrollment = await prisma.enrollment.update({
         where: { id: existing.id },
         data: {
           payment: {
-            update: {
-              where: { enrollmentId: existing.id },
-              data: {
+            upsert: {
+              create: {
+                provider: "razorpay",
+                providerId: order.id,
+                amount: amount,
+                status: "pending"
+              },
+              update: {
                 providerId: order.id,
                 amount: amount,
                 status: "pending"

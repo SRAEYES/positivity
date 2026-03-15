@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GraduationCap, Calendar, MessageCircle, ExternalLink, XCircle, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import { GraduationCap, Calendar, MessageCircle, ExternalLink, XCircle, Sparkles, Loader2, ArrowRight, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function EnrolledCourses() {
@@ -141,10 +141,17 @@ export default function EnrolledCourses() {
                         )}
                       </div>
                     ) : (
-                      <div className="flex items-center gap-3 bg-orange-100/50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 px-6 py-4 rounded-2xl mb-4 border border-orange-200 dark:border-orange-900/50">
-                        <Sparkles className="w-5 h-5 animate-pulse" />
-                        <span className="text-xs font-black uppercase tracking-widest">Dakshina Pending</span>
-                      </div>
+                      e.course.price === 0 ? (
+                        <div className="flex items-center gap-3 bg-secondary/10 text-secondary px-6 py-4 rounded-2xl mb-4 border border-secondary/20">
+                          <BookOpen className="w-5 h-5" />
+                          <span className="text-xs font-black uppercase tracking-widest">Divine Path Ready</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-3 bg-orange-100/50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 px-6 py-4 rounded-2xl mb-4 border border-orange-200 dark:border-orange-900/50">
+                          <Sparkles className="w-5 h-5 animate-pulse" />
+                          <span className="text-xs font-black uppercase tracking-widest">Dakshina Pending</span>
+                        </div>
+                      )
                     )}
 
                     <button 

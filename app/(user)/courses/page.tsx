@@ -22,28 +22,31 @@ export default function CoursesPage() {
   const [enrolledCourses, setEnrolledCourses] = useState<number[]>([]);
 
   useEffect(() => {
-    async function fetchCourses() {
+    async function loadData() {
+      const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
+      
       try {
-        const res = await fetch("/api/courses");
-        if (res.ok) {
-          const data = await res.json();
-          setCourses(data.courses || []);
+        const [coursesRes, enrollmentsRes] = await Promise.all([
+          fetch("/api/courses"),
+          user.id ? fetch(`/api/enrollments?userId=${user.id}`).then(res => res.json()) : Promise.resolve({ enrollments: [] })
+        ]);
+
+        if (coursesRes.ok) {
+          const coursesData = await coursesRes.json();
+          setCourses(coursesData.courses || []);
+        }
+
+        if (enrollmentsRes.enrollments) {
+          // Track all enrollments to show proper status (Wise Path Enrolled)
+          setEnrolledCourses(enrollmentsRes.enrollments.map((e: any) => e.courseId) || []);
         }
       } catch (e) {
-        console.error("Courses fetch error:", e);
+        console.error("Data load error:", e);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
-    fetchCourses();
-
-    const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
-    if (user.id) {
-      fetch(`/api/enrollments?userId=${user.id}`)
-        .then(res => res.json())
-        .then(data => {
-          setEnrolledCourses(data.enrollments?.filter((e: any) => e.paid).map((e: any) => e.courseId) || []);
-        });
-    }
+    loadData();
   }, []);
 
   const loadRazorpay = () => {
@@ -72,8 +75,10 @@ export default function CoursesPage() {
         });
         if (res.ok) {
             setEnrolledCourses([...enrolledCourses, course.id]);
+            // Redirect or show success
         } else {
-            alert("Enrollment failed");
+            const data = await res.json();
+            alert(data.error || "Enrollment failed");
         }
         return;
     }

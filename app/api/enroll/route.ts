@@ -13,30 +13,30 @@ export async function POST(req: Request) {
       );
     }
 
+    const course = await prisma.course.findUnique({ where: { id: courseId } });
+    if (!course) return NextResponse.json({ error: "Course not found" }, { status: 404 });
+
     const existing = await prisma.enrollment.findFirst({
-      where: {
-        userId,
-        courseId,
-      },
+      where: { userId, courseId },
     });
 
     if (existing) {
-      return NextResponse.json(
-        { error: "Already enrolled" },
-        { status: 400 }
-      );
+      if (existing.paid) {
+        return NextResponse.json({ message: "Already enrolled in this sacred path." }, { status: 200 });
+      }
+      return NextResponse.json({ message: "Thy initiation is already pending.", enrollment: existing }, { status: 200 });
     }
 
     const enrollment = await prisma.enrollment.create({
       data: {
         userId,
         courseId,
-        paid: false,
+        paid: course.price === 0,
       },
     });
 
     return NextResponse.json({
-      message: "Enrollment created",
+      message: course.price === 0 ? "Sacred path joined successfully" : "Initiation started",
       enrollment,
     });
   } catch (error) {
