@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, BookOpen, GraduationCap, IndianRupee, Plus, Settings, Bell, Search, Loader2, ArrowUpRight, TrendingUp, BarChart3, LineChart as LineIcon, LogOut, UserCircle2, Gamepad2, Trophy } from "lucide-react";
-import { motion } from "framer-motion";
+import { 
+  Users, BookOpen, MessageSquare, Bell, Settings, Search, 
+  ArrowUpRight, Clock, Shield, LayoutDashboard, Database,
+  GraduationCap, BarChart3, IndianRupee, Plus, Loader2,
+  TrendingUp, LineChart as LineIcon, LogOut, UserCircle2,
+  Gamepad2, Trophy, Info, X
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Label } from "@/components/ui/label";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
 export default function AdminDashboard() {
@@ -12,9 +19,11 @@ export default function AdminDashboard() {
   const navItems = [
     { icon: <UserCircle2 className="w-6 h-6" />, label: "Master Identity", href: "/admin/profile" },
     { icon: <BookOpen className="w-6 h-6" />, label: "Wisdom Archives", href: "/admin/courses" },
+    { icon: <GraduationCap className="w-6 h-6" />, label: "Divine Exams", href: "/admin/exams" },
     { icon: <Bell className="w-6 h-6" />, label: "Manifest Update", href: "/admin/notifications" },
     { icon: <Gamepad2 className="w-6 h-6" />, label: "Spiritual Arena", href: "/admin/games" },
     { icon: <Trophy className="w-6 h-6" />, label: "Reward Center", href: "/admin/rewards" },
+    { icon: <BarChart3 className="w-6 h-6" />, label: "Performance", href: "/admin/performance" },
     { icon: <LogOut className="w-6 h-6" />, label: "Depart Portal", href: "/logout", isLogout: true },
   ];
 
@@ -27,6 +36,7 @@ export default function AdminDashboard() {
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [analytics, setAnalytics] = useState<any>({ growthTrend: [], financialTrend: [] });
   const [loading, setLoading] = useState(true);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -246,8 +256,8 @@ export default function AdminDashboard() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-zinc-100 dark:border-zinc-800">
-                                <th className="px-4 pb-4 text-[10px] font-black uppercase tracking-widest opacity-30">Student</th>
-                                <th className="px-4 pb-4 text-[10px] font-black uppercase tracking-widest opacity-30">Course</th>
+                                <th className="px-4 pb-4 text-[10px] font-black uppercase tracking-widest opacity-30">Seeker Details</th>
+                                <th className="px-4 pb-4 text-[10px] font-black uppercase tracking-widest opacity-30">Wisdom Path</th>
                                 <th className="px-4 pb-4 text-[10px] font-black uppercase tracking-widest opacity-30">Status</th>
                                 <th className="px-4 pb-4 text-right text-[10px] font-black uppercase tracking-widest opacity-30">Time</th>
                             </tr>
@@ -255,13 +265,13 @@ export default function AdminDashboard() {
                         <tbody className="divide-y divide-zinc-50 dark:divide-zinc-800/50 text-sm">
                             {enrollments.slice(0, 8).map((enroll) => (
                                 <tr key={enroll.id} className="group hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors">
-                                    <td className="px-4 py-6">
+                                    <td className="px-4 py-6 cursor-pointer" onClick={() => setSelectedStudent(enroll.user)}>
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent font-black">
+                                            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent font-black group-hover:bg-accent group-hover:text-white transition-all">
                                                 {enroll.user?.name?.[0] || 'S'}
                                             </div>
                                             <div>
-                                                <p className="font-black text-foreground">{enroll.user?.name || "Anonymous Seeker"}</p>
+                                                <p className="font-black text-foreground group-hover:text-accent transition-colors">{enroll.user?.name || "Anonymous Seeker"}</p>
                                                 <p className="text-[10px] opacity-40 uppercase tracking-tighter">{enroll.user?.email}</p>
                                             </div>
                                         </div>
@@ -319,6 +329,59 @@ export default function AdminDashboard() {
                 </motion.div>
             </div>
           </div>
+
+          {/* Student Detail Modal */}
+          <AnimatePresence>
+            {selectedStudent && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                onClick={() => setSelectedStudent(null)}
+              >
+                <motion.div 
+                  initial={{ scale: 0.9, y: 20 }}
+                  animate={{ scale: 1, y: 0 }}
+                  exit={{ scale: 0.9, y: 20 }}
+                  className="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-[3rem] overflow-hidden shadow-2xl relative"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <button 
+                    onClick={() => setSelectedStudent(null)}
+                    className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-full text-foreground/40 hover:text-foreground transition-all z-10"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+
+                  <div className="p-10 text-center">
+                    <div className="w-24 h-24 bg-accent/10 rounded-[2rem] flex items-center justify-center text-4xl text-accent font-black mx-auto mb-6">
+                      {selectedStudent.name?.[0] || 'S'}
+                    </div>
+                    <h2 className="text-3xl font-black text-foreground tracking-tighter mb-2">{selectedStudent.name || "Anonymous Seeker"}</h2>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent mb-10">Authorized Seeker</p>
+
+                    <div className="space-y-4 text-left">
+                        <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <Label className="text-[10px] font-black uppercase tracking-widest opacity-40">Email Address</Label>
+                            <p className="font-bold text-foreground mt-1">{selectedStudent.email}</p>
+                        </div>
+                        <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <Label className="text-[10px] font-black uppercase tracking-widest opacity-40">Access Role</Label>
+                            <p className="font-bold text-foreground mt-1 uppercase tracking-tighter">{selectedStudent.role}</p>
+                        </div>
+                        <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <Label className="text-[10px] font-black uppercase tracking-widest opacity-40">Initiation Date</Label>
+                            <p className="font-bold text-foreground mt-1">
+                                {selectedStudent.createdAt ? new Date(selectedStudent.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' }) : 'Unknown'}
+                            </p>
+                        </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
     </div>

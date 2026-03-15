@@ -13,6 +13,7 @@ interface Course {
   gcrLink?: string;
   description?: string;
   startDate?: string;
+  price?: number;
 }
 
 export default function CoursesPage() {
@@ -40,22 +41,108 @@ export default function CoursesPage() {
       fetch(`/api/enrollments?userId=${user.id}`)
         .then(res => res.json())
         .then(data => {
-          setEnrolledCourses(data.enrollments?.map((e: any) => e.courseId) || []);
+          setEnrolledCourses(data.enrollments?.filter((e: any) => e.paid).map((e: any) => e.courseId) || []);
         });
     }
   }, []);
 
-  const handleEnroll = async (courseId: number) => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const res = await fetch("/api/enroll", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id, courseId }),
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
     });
-    if (res.ok) {
-      setEnrolledCourses([...enrolledCourses, courseId]);
-    } else {
-      alert("Enrollment failed");
+  };
+
+  const handleEnroll = async (course: Course) => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (!user.id) {
+        alert("Please login to proceed with initiation.");
+        return;
+    }
+
+    if (!course.price || course.price === 0) {
+        // Free course, direct enrollment
+        const res = await fetch("/api/enroll", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id, courseId: course.id }),
+        });
+        if (res.ok) {
+            setEnrolledCourses([...enrolledCourses, course.id]);
+        } else {
+            alert("Enrollment failed");
+        }
+        return;
+    }
+
+    // Paid course, trigger Razorpay
+    try {
+        const orderRes = await fetch("/api/payment/order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                userId: user.id, 
+                courseId: course.id, 
+                amount: course.price 
+            }),
+        });
+        
+        const orderData = await orderRes.json();
+        if (!orderRes.ok) throw new Error(orderData.error || "Failed to create order");
+
+        const resScript = await loadRazorpay();
+        if (!resScript) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            return;
+        }
+
+        const options = {
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_SRSOudExcBg1uY",
+            amount: orderData.amount,
+            currency: orderData.currency,
+            name: "Divine Wisdom Portal",
+            description: `Initiation into ${course.title}`,
+            image: "/logo.png",
+            order_id: orderData.orderId,
+            handler: async function (response: any) {
+                const verifyRes = await fetch("/api/payment/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                        enrollmentId: orderData.enrollmentId
+                    }),
+                });
+
+                const verifyData = await verifyRes.json();
+                if (verifyRes.ok && verifyData.success) {
+                    setEnrolledCourses([...enrolledCourses, course.id]);
+                } else {
+                    alert("Payment verification failed. Please contact support.");
+                }
+            },
+            prefill: {
+                name: user.name,
+                email: user.email,
+            },
+            theme: {
+                color: "#f4c430", // Saffron color
+            },
+        };
+
+        const paymentObject = new (window as any).Razorpay(options);
+        paymentObject.on("payment.failed", function (response: any) {
+            alert("Payment failed: " + response.error.description);
+        });
+        paymentObject.open();
+
+    } catch (e: any) {
+        alert(e.message || "An error occurred during payment");
     }
   };
 
@@ -157,6 +244,10 @@ export default function CoursesPage() {
                           <span>{course.timeslot}</span>
                         </div>
                       )}
+                      <div className="flex items-center gap-3 text-sm font-black text-primary">
+                        <Sparkles className="w-4 h-4" />
+                        <span>{course.price && course.price > 0 ? `Offer: ₹${course.price}` : "Divine Offering (Free)"}</span>
+                      </div>
                     </div>
 
                     <div className="mt-auto flex flex-col gap-4">
@@ -184,7 +275,7 @@ export default function CoursesPage() {
                         </div>
                       ) : (
                         <button
-                          onClick={() => handleEnroll(course.id)}
+                          onClick={() => handleEnroll(course)}
                           className="w-full flex items-center justify-center gap-3 h-16 bg-primary hover:bg-primary/90 text-white rounded-[2rem] font-black shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
                         >
                           Enroll Now <ArrowRight className="w-5 h-5" />

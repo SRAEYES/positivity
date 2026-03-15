@@ -62,10 +62,12 @@ export default function FlipCards() {
 
                     {/* Back */}
                     <div className="absolute inset-0 backface-hidden bg-white dark:bg-zinc-800 rounded-[3rem] p-12 flex flex-col items-center justify-center text-center shadow-2xl border-4 border-rose-500/20 rotate-y-180">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500/40 mb-8">Meaning</h4>
-                        <p className="text-4xl font-black text-foreground tracking-tight leading-tight">{CARDS[current].english}</p>
-                        <div className="mt-12 p-3 bg-rose-500/10 rounded-full text-rose-500">
-                            <Zap className="w-6 h-6" />
+                        <div className="rotate-y-180">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500/40 mb-8">Meaning</h4>
+                            <p className="text-4xl font-black text-foreground tracking-tight leading-tight">{CARDS[current].english}</p>
+                            <div className="mt-12 p-3 bg-rose-500/10 rounded-full text-rose-500 flex items-center justify-center w-fit mx-auto">
+                                <Zap className="w-6 h-6" />
+                            </div>
                         </div>
                     </div>
                 </motion.div>

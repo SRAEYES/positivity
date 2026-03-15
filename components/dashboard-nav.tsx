@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { LayoutDashboard, BookOpen, GraduationCap, User, LogOut, ChevronLeft, Sun, Bell } from "lucide-react";
+import { LayoutDashboard, BookOpen, GraduationCap, User, LogOut, ChevronLeft, Sun, Bell, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 export default function DashboardNav() {
@@ -34,9 +34,53 @@ export default function DashboardNav() {
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/courses", label: "Courses", icon: BookOpen },
     { href: "/dashboard/enrolled", label: "My Courses", icon: GraduationCap },
-    { href: "/dashboard/notifications", label: "Updates", icon: Bell, badge: unreadCount > 0 },
     { href: "/dashboard/profile", label: "Profile", icon: User },
   ];
+
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showUpdates, setShowUpdates] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const fetchNotifications = async () => {
+    const userString = localStorage.getItem("user");
+    if (!userString) return;
+    const user = JSON.parse(userString);
+    try {
+      const res = await fetch(`/api/notifications?userId=${user.id}`);
+      const data = await res.json();
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unreadCount || 0);
+    } catch (e) { console.error(e); }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setShowUpdates(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowUpdates(false);
+      }
+    }
+    if (showUpdates) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showUpdates]);
+
+  const markAsRead = async (id: number) => {
+    try {
+      await fetch(`/api/notifications?id=${id}`, { method: 'PATCH' });
+      fetchNotifications();
+    } catch (e) { console.error(e); }
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full px-6 py-4">
@@ -65,7 +109,7 @@ export default function DashboardNav() {
         </div>
 
         {/* Navigation Links */}
-        <div className="flex items-center gap-1 md:gap-4 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1 md:gap-4">
           {links.map((link) => {
             const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href + "/"));
             const Icon = link.icon;
@@ -81,19 +125,61 @@ export default function DashboardNav() {
               >
                 <Icon className={`w-4 h-4 ${isActive ? "text-orange-600 dark:text-orange-400" : "opacity-60"}`} />
                 <span className="hidden sm:inline">{link.label}</span>
-                {link.badge && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900 animate-pulse"></span>
-                )}
-                {isActive && (
-                  <motion.div 
-                    layoutId="active-pill"
-                    className="absolute inset-0 border-2 border-orange-300 dark:border-orange-900 rounded-2xl pointer-events-none"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
               </Link>
             );
           })}
+
+          {/* Updates Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              onClick={() => setShowUpdates(!showUpdates)}
+              className={`relative flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all whitespace-nowrap ${
+                showUpdates 
+                  ? "text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-900/30" 
+                  : "text-zinc-500 dark:text-zinc-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+              }`}
+            >
+              <Bell className={`w-4 h-4 ${unreadCount > 0 ? "text-orange-600 animate-pulse" : "opacity-60"}`} />
+              <span className="hidden sm:inline">Updates</span>
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border border-white"></span>
+              )}
+            </button>
+
+            {showUpdates && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                className="absolute right-0 mt-4 w-80 bg-white dark:bg-zinc-900 border border-orange-100 dark:border-orange-900 rounded-[2rem] shadow-3xl p-6 z-[60]"
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-black text-sm uppercase tracking-widest text-orange-600">Divine Updates</h3>
+                  <span className="text-[10px] font-bold opacity-30">{unreadCount} New</span>
+                </div>
+                
+                <div className="space-y-3 max-h-80 overflow-y-auto no-scrollbar">
+                  {notifications.length === 0 ? (
+                    <p className="text-center py-8 text-xs font-medium opacity-40 italic">No new revelations today...</p>
+                  ) : (
+                    notifications.map((n) => (
+                      <div 
+                        key={n.id} 
+                        onClick={() => markAsRead(n.id)}
+                        className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+                          n.read 
+                            ? "bg-zinc-50 dark:bg-zinc-800/50 border-transparent opacity-60" 
+                            : "bg-orange-50 dark:bg-orange-900/10 border-orange-100 dark:border-orange-900/40"
+                        }`}
+                      >
+                        <h4 className="font-black text-xs mb-1">{n.title}</h4>
+                        <p className="text-[10px] font-medium opacity-60 line-clamp-2">{n.message}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </div>
         </div>
 
         {/* Logout */}

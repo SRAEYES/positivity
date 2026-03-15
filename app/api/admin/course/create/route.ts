@@ -12,7 +12,9 @@ export async function POST(req: Request) {
       startDate,
       timeslot,
       wpLink,
-      gcrLink
+      gcrLink,
+      price,
+      pricingType
     } = body;
 
     if (!title) {
@@ -30,6 +32,8 @@ export async function POST(req: Request) {
         timeslot,
         wpLink,
         gcrLink,
+        price: parseFloat(price) || 0,
+        pricingType: pricingType || "ONETIME",
         startDate: startDate ? new Date(startDate) : null,
       },
     });

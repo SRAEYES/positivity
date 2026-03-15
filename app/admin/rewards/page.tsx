@@ -25,7 +25,7 @@ export default function AdminRewards() {
         try {
             const res = await fetch("/api/admin/perks");
             const data = await res.json();
-            setPerks(data);
+            setPerks(Array.isArray(data) ? data : (data.perks || []));
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
     };

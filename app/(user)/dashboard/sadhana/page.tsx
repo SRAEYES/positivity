@@ -408,25 +408,26 @@ export default function SadhanaNexus() {
                                 <div className="space-y-10">
                                     <motion.div 
                                         whileHover={{ y: -5 }}
-                                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-12 rounded-[4rem] shadow-2xl relative overflow-hidden"
+                                        whileTap={{ scale: 0.98 }}
+                                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-12 rounded-[4rem] shadow-2xl relative overflow-hidden active:bg-zinc-950 transition-colors group"
                                     >
                                         <div className="absolute top-0 right-0 p-8">
-                                            <Trophy className="w-10 h-10 text-primary opacity-20" />
+                                            <Trophy className="w-10 h-10 text-primary opacity-20 group-active:text-white transition-colors" />
                                         </div>
-                                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-8">{viewMode === 'history' ? `Realization: ${selectedDate}` : "Spiritual Momentum"}</h3>
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-8 group-active:text-white/40 transition-colors">{viewMode === 'history' ? `Realization: ${selectedDate}` : "Spiritual Momentum"}</h3>
                                         <div className="space-y-10">
                                             <div className="flex justify-between items-end">
-                                                <div>
+                                                <div className="group-active:text-white transition-colors">
                                                     <div className="text-7xl font-black tracking-tighter tabular-nums">
                                                         {(viewMode === 'history' ? historyProgress : progress).filter(p => p.goalId === activeGoal?.id).reduce((acc, p) => acc + p.roundsCompleted, 0)}
                                                     </div>
                                                     <p className="text-[10px] font-black uppercase tracking-widest opacity-30 mt-2">Rounds Manifested Today</p>
                                                 </div>
-                                                <div className="text-primary font-black text-2xl tracking-tighter italic">
+                                                <div className="text-primary font-black text-2xl tracking-tighter italic group-active:text-primary-foreground transition-colors">
                                                     {Math.min(100, Math.round((((viewMode === 'history' ? historyProgress : progress).filter(p => p.goalId === activeGoal?.id).reduce((acc, p) => acc + p.roundsCompleted, 0)) / (activeGoal?.dailyRoundsGoal || 1)) * 100))}%
                                                 </div>
                                             </div>
-                                            <div className="w-full h-5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden shadow-inner p-1">
+                                            <div className="w-full h-5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden shadow-inner p-1 group-active:bg-zinc-800 transition-colors">
                                                 <motion.div
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${Math.min(100, (((viewMode === 'history' ? historyProgress : progress).filter(p => p.goalId === activeGoal?.id).reduce((acc, p) => acc + p.roundsCompleted, 0)) / (activeGoal?.dailyRoundsGoal || 1)) * 100)}%` }}
@@ -656,20 +657,21 @@ export default function SadhanaNexus() {
                                             <motion.div
                                                 key={book.id}
                                                 whileHover={{ y: -20, rotate: 1 }}
-                                                className="bg-white dark:bg-zinc-900 rounded-[4rem] overflow-hidden group cursor-pointer shadow-3xl relative border border-zinc-100 dark:border-zinc-800"
+                                                whileTap={{ scale: 0.98 }}
+                                                className="bg-white dark:bg-zinc-900 rounded-[4rem] overflow-hidden group cursor-pointer shadow-3xl relative border border-zinc-100 dark:border-zinc-800 active:bg-zinc-950 active:border-orange-500/50 transition-all"
                                                 onClick={() => setReadingBook(book)}
                                             >
                                                 <div className="aspect-[3/4.5] overflow-hidden relative">
                                                     <img src={book.coverUrl} className="w-full h-full object-cover transition-all duration-[1.5s] group-hover:scale-110" />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent group-active:from-orange-950/80 transition-all" />
                                                     <div className="absolute top-8 left-8">
                                                         <div className="px-5 py-2.5 bg-white/20 backdrop-blur-xl border border-white/40 rounded-full text-[8px] font-black uppercase tracking-[0.3em] text-white shadow-2xl">Sacred Text</div>
                                                     </div>
                                                 </div>
                                                 <div className="p-10 space-y-4">
-                                                    <h3 className="text-3xl font-black group-hover:text-orange-500 transition-colors tracking-tighter">{book.title}</h3>
-                                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500">{book.author}</p>
-                                                    <p className="text-sm text-foreground/50 font-medium italic line-clamp-2 leading-relaxed">{book.description || "A timeless vessel of spiritual illumination."}</p>
+                                                    <h3 className="text-3xl font-black group-hover:text-orange-500 group-active:text-white transition-colors tracking-tighter uppercase">{book.title}</h3>
+                                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 group-active:text-orange-400">{book.author}</p>
+                                                    <p className="text-sm text-foreground/50 font-medium italic line-clamp-2 leading-relaxed group-active:text-white/40">{book.description || "A timeless vessel of spiritual illumination."}</p>
                                                     <div className="pt-8 flex justify-between items-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                                                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 flex items-center gap-3">Commence Reading <ArrowRight className="w-4 h-4" /></span>
                                                         <div className="flex gap-4">

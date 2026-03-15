@@ -5,7 +5,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
   try {
     const params = await context.params;
     const body = await req.json();
-    const { title, description, thumbnail, timeslot, wpLink, gcrLink, startDate } = body;
+    const { title, description, thumbnail, timeslot, wpLink, gcrLink, startDate, price, pricingType } = body;
     if (!title) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
@@ -22,6 +22,8 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         timeslot, 
         wpLink, 
         gcrLink,
+        price: parseFloat(price) || 0,
+        pricingType: pricingType || "ONETIME",
         startDate: startDate ? new Date(startDate) : null,
       },
     });

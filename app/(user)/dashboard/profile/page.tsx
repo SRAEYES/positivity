@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Mail, Shield, MapPin, Globe, Home, Users, Edit3, Save, X, Sparkles, Loader2, Camera } from "lucide-react";
+import { User, Mail, Shield, MapPin, Globe, Home, Users, Edit3, Save, X, Sparkles, Loader2, Camera, Image as ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,6 +43,34 @@ export default function ProfilePage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64 = reader.result as string;
+            setSaving(true);
+            try {
+                const res = await fetch(`/api/user/${user.id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...formData, imageUrl: base64 }),
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data.user);
+                    setFormData(data.user);
+                }
+            } catch (err) {
+                console.error("Image upload failed", err);
+            } finally {
+                setSaving(false);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -98,21 +128,33 @@ export default function ProfilePage() {
             <motion.div 
                initial={{ opacity: 0, scale: 0.9 }}
                animate={{ opacity: 1, scale: 1 }}
-               className="relative mb-10"
+               className="relative mb-10 group"
             >
-                <div className="w-40 h-40 bg-white dark:bg-zinc-800 rounded-[3rem] p-1 shadow-2xl border-4 border-primary/20 relative group">
+                <div className="w-40 h-40 bg-white dark:bg-zinc-800 rounded-[3rem] p-1 shadow-2xl border-4 border-primary/20 relative overflow-hidden">
                     <div className="w-full h-full bg-primary/5 rounded-[2.8rem] flex items-center justify-center overflow-hidden">
-                        <User className="w-20 h-20 text-primary opacity-30" />
+                        {user.imageUrl ? (
+                            <img src={user.imageUrl} className="w-full h-full object-cover" alt="Profile" />
+                        ) : (
+                            <User className="w-20 h-20 text-primary opacity-30" />
+                        )}
                     </div>
-                    {isEditing && (
-                        <div className="absolute inset-0 bg-black/40 rounded-[2.8rem] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                            <Camera className="text-white w-8 h-8" />
-                        </div>
-                    )}
+                    <label className="absolute inset-0 bg-black/40 rounded-[2.8rem] flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                        {saving ? (
+                            <Loader2 className="text-white w-8 h-8 animate-spin" />
+                        ) : (
+                            <>
+                                <Camera className="text-white w-8 h-8 mb-2" />
+                                <span className="text-[8px] font-black text-white uppercase tracking-widest">Update Photo</span>
+                            </>
+                        )}
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={saving} />
+                    </label>
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 rotate-12">
-                    <Sparkles className="text-white w-6 h-6" />
-                </div>
+                {!saving && (
+                    <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 rotate-12">
+                        <Sparkles className="text-white w-6 h-6" />
+                    </div>
+                )}
             </motion.div>
 
             <motion.h1 
@@ -135,15 +177,17 @@ export default function ProfilePage() {
         >
             <div className="flex justify-between items-center mb-12 border-b border-zinc-100 dark:border-zinc-700 pb-8">
                 <h2 className="text-3xl font-black text-foreground tracking-tight">Personal Details</h2>
-                {!isEditing && (
-                    <Button 
-                        onClick={() => setIsEditing(true)} 
-                        className="h-14 px-8 rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-black transition-all gap-2"
-                    >
-                        <Edit3 className="w-4 h-4" />
-                        Modify Record
-                    </Button>
-                )}
+                <div className="flex gap-4">
+                    {!isEditing && (
+                        <Button 
+                            onClick={() => setIsEditing(true)} 
+                            className="h-14 px-8 rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-black transition-all gap-2"
+                        >
+                            <Edit3 className="w-4 h-4" />
+                            Modify Record
+                        </Button>
+                    )}
+                </div>
             </div>
 
             <AnimatePresence mode="wait">

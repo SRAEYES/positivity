@@ -31,3 +31,20 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "Failed to fetch notifications" }, { status: 500 });
     }
 }
+
+export async function PATCH(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const id = parseInt(searchParams.get("id") || "0");
+
+    if (!id) return NextResponse.json({ error: "Missing notification id" }, { status: 400 });
+
+    try {
+        await prisma.notification.update({
+            where: { id },
+            data: { read: true }
+        });
+        return NextResponse.json({ success: true });
+    } catch (e) {
+        return NextResponse.json({ error: "Failed to update notification" }, { status: 500 });
+    }
+}

@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { 
-    PenTool, Save, ArrowLeft, Loader2, Sparkles, User, GraduationCap, Briefcase, FileText, Image as ImageIcon
+    PenTool, Save, ArrowLeft, Loader2, Sparkles, User, GraduationCap, Briefcase, FileText, Image as ImageIcon, Upload
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +31,17 @@ export default function TeacherProfileManagement() {
             if (data.id) setProfile(data);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProfile({ ...profile, imageUrl: reader.result as string });
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleSave = async (e: React.FormEvent) => {
@@ -127,21 +137,28 @@ export default function TeacherProfileManagement() {
 
                         <div className="space-y-3">
                             <Label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ml-1 opacity-40">
-                                <ImageIcon className="w-3 h-3" /> Guide Portrait URL
+                                <ImageIcon className="w-3 h-3" /> Guide Portrait
                             </Label>
-                            <div className="flex gap-4">
-                                <Input 
-                                    value={profile.imageUrl}
-                                    onChange={(e) => setProfile({...profile, imageUrl: e.target.value})}
-                                    placeholder="Enter image URL or path"
-                                    className="h-16 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border-transparent px-8 font-bold text-lg grow"
-                                />
-                                <div className="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-200 dark:border-zinc-700 flex items-center justify-center overflow-hidden">
+                            <div className="relative group">
+                                <div className="h-32 w-full bg-zinc-50 dark:bg-zinc-950 border-4 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] flex flex-col items-center justify-center gap-2 transition-all group-hover:border-accent group-hover:bg-accent/5 overflow-hidden relative">
                                     {profile.imageUrl ? (
-                                        <img src={profile.imageUrl} className="w-full h-full object-cover" />
+                                        <>
+                                            <img src={profile.imageUrl} alt="Preview" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+                                            <Upload className="w-6 h-6 text-accent relative z-10" />
+                                            <span className="text-[10px] font-bold text-accent relative z-10 uppercase tracking-widest">Change Portrait</span>
+                                        </>
                                     ) : (
-                                        <ImageIcon className="w-6 h-6 opacity-20" />
+                                        <>
+                                            <Upload className="w-6 h-6 opacity-20" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest opacity-20">Tap to Manifest Image</span>
+                                        </>
                                     )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-20"
+                                    />
                                 </div>
                             </div>
                         </div>

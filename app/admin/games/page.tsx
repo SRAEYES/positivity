@@ -24,7 +24,7 @@ export default function AdminGames() {
         try {
             const res = await fetch("/api/admin/games");
             const data = await res.json();
-            setQuizzes(data);
+            setQuizzes(Array.isArray(data) ? data : (data.quizzes || []));
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
     };

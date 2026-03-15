@@ -54,9 +54,19 @@ export async function GET() {
     const growthTrend = getGrowthData(studentEnrollments);
     const financialTrend = getFinancialData(successfulPayments);
 
+    const recentEnrollments = await prisma.enrollment.findMany({
+      take: 20,
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: { select: { name: true, email: true } },
+        course: { select: { title: true } }
+      }
+    });
+
     return NextResponse.json({
         growthTrend,
-        financialTrend
+        financialTrend,
+        recentEnrollments
     });
 
   } catch (error) {

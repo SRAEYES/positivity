@@ -22,16 +22,21 @@ export async function POST(req: Request) {
         if (!lastLogin) {
             newStreak = 1;
         } else {
-            const diffInHours = (now.getTime() - lastLogin.getTime()) / (1000 * 60 * 60);
+            // Normalize to UTC midnight for date comparison
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const last = new Date(lastLogin.getFullYear(), lastLogin.getMonth(), lastLogin.getDate());
             
-            if (diffInHours < 24) {
-                // Already logged in today, do nothing or keep same
-            } else if (diffInHours < 48) {
+            const diffInMs = today.getTime() - last.getTime();
+            const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+            if (diffInDays === 1) {
                 // Continuous day login
                 newStreak += 1;
-            } else {
+            } else if (diffInDays > 1) {
                 // Streak broken
                 newStreak = 1;
+            } else if (diffInDays === 0) {
+                // Already logged in today, keep same
             }
         }
 

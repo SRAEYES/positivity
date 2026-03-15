@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 const PUZZLE_DATA = [
     {
         id: 1,
-        full: "Hare Krishna Hare Krishna Krishna Krishna Hare Hare / Hare Rama Hare Rama Rama Rama Hare Hare",
+        full: "Hare Krishna Hare Krishna Krishna Krishna Hare Hare Hare Rama Hare Rama Rama Rama Hare Hare",
         tiles: ["Hare Krishna", "Hare Krishna", "Krishna Krishna", "Hare Hare", "Hare Rama", "Hare Rama", "Rama Rama", "Hare Hare"]
     },
     {
         id: 2,
-        full: "Om Namo Bhagavate Vasudevaya",
-        tiles: ["Om Namo", "Bhagavate", "Vasudevaya"]
+        full: "Jaya Sri Krishna Chaitanya Prabhu Nityananda Sri Advaita Gadadhara Srivasadi Gaura Bhakta Vrinda",
+        tiles: ["Jaya Sri Krishna", "Chaitanya", "Prabhu Nityananda", "Sri Advaita", "Gadadhara", "Srivasadi", "Gaura Bhakta", "Vrinda"]
     }
 ];
 

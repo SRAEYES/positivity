@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Sparkles, Plus, ArrowLeft, Loader2, Image as ImageIcon, Calendar, Clock, MessageCircle, Globe, AlignLeft, LogOut } from "lucide-react";
+import { Sparkles, Plus, ArrowLeft, Loader2, Image as ImageIcon, Calendar, Clock, MessageCircle, Globe, AlignLeft, LogOut, Upload, Zap } from "lucide-react";
 
 export default function CreateCoursePage() {
   const router = useRouter();
@@ -18,12 +18,26 @@ export default function CreateCoursePage() {
     startDate: "",
     wpLink: "",
     gcrLink: "",
+    price: 0,
+    pricingType: "ONETIME",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: name === 'price' ? (parseFloat(value) || 0) : value });
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setForm({ ...form, thumbnail: reader.result as string });
+        };
+        reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,34 +108,35 @@ export default function CreateCoursePage() {
                     </div>
                     <div className="space-y-2">
                         <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">
-                            Thumbnail URL
+                            Path Essence (Image)
                         </Label>
-                        <div className="relative">
-                            <ImageIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 opacity-20" />
-                            <Input
-                                name="thumbnail"
-                                value={form.thumbnail}
-                                onChange={handleChange}
-                                className="h-14 pl-14 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-2xl font-bold"
-                                placeholder="https://images.unsplash.com/..."
-                                required
-                            />
-                        </div>
-
-                        {form.thumbnail && (
-                            <div className="mt-3 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
-                                <img
-                                    src={form.thumbnail}
-                                    alt="Thumbnail preview"
-                                    className="w-full h-48 object-cover"
+                        <div className="relative group">
+                            <div className="h-24 w-full bg-zinc-50 dark:bg-zinc-950 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group-hover:border-accent group-hover:bg-accent/5 overflow-hidden relative">
+                                {form.thumbnail ? (
+                                    <>
+                                        <img src={form.thumbnail} alt="Preview" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+                                        <Upload className="w-5 h-5 text-accent relative z-10" />
+                                        <span className="text-[10px] font-bold text-accent relative z-10 uppercase tracking-widest">Change Image</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Upload className="w-5 h-5 opacity-20" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest opacity-20">Tap to Upload</span>
+                                    </>
+                                )}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className="absolute inset-0 opacity-0 cursor-pointer z-20"
                                 />
                             </div>
-                        )}
+                        </div>
                     </div>
                     <div className="space-y-2">
-                        <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Deep Description</Label>
+                        <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Deep Description (Optional)</Label>
                         <div className="relative">
-                            <textarea name="description" value={form.description} onChange={handleChange} className="w-full min-h-[160px] p-6 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-[1.5rem] font-bold text-sm focus:outline-none focus:ring-4 focus:ring-accent/5 focus:border-accent/20 transition-all" placeholder="The eternal secrets of the soul..." required />
+                            <textarea name="description" value={form.description} onChange={handleChange} className="w-full min-h-[160px] p-6 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-[1.5rem] font-bold text-sm focus:outline-none focus:ring-4 focus:ring-accent/5 focus:border-accent/20 transition-all" placeholder="The eternal secrets of the soul..." />
                         </div>
                     </div>
                 </div>
@@ -158,6 +173,35 @@ export default function CreateCoursePage() {
                         <div className="relative">
                             <Globe className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 opacity-20" />
                             <Input name="gcrLink" value={form.gcrLink} onChange={handleChange} className="h-14 pl-14 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-2xl font-bold" placeholder="https://classroom.google.com/..." required />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Initiation Fee (INR)</Label>
+                            <div className="relative">
+                                <Sparkles className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-accent opacity-40" />
+                                <Input name="price" type="number" value={form.price.toString()} onChange={handleChange} className="h-14 pl-14 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-2xl font-bold" placeholder="0 for Free" required />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Pricing Model</Label>
+                            <div className="flex bg-zinc-50 dark:bg-zinc-950 rounded-2xl p-1 h-14">
+                                {["ONETIME", "SUBSCRIPTION"].map((type) => (
+                                    <button
+                                        key={type}
+                                        type="button"
+                                        onClick={() => setForm({ ...form, pricingType: type })}
+                                        className={`flex-1 flex items-center justify-center gap-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${
+                                            form.pricingType === type 
+                                            ? "bg-white dark:bg-zinc-900 text-accent shadow-sm border border-zinc-100 dark:border-zinc-800" 
+                                            : "text-foreground/30 hover:text-foreground/60"
+                                        }`}
+                                    >
+                                        <Zap className={`w-3 h-3 ${form.pricingType === type ? "text-accent" : "opacity-30"}`} />
+                                        {type}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -12,6 +12,7 @@ model User {
   email       String       @unique
   password    String
   name        String?
+  imageUrl    String?
   age         Int?
   country     String?
   state       String?
@@ -27,6 +28,7 @@ model User {
   journals    SpiritualJournal[]
   bookmarks   LibraryBookmark[]
   perks       UserPerk[]
+  results     QuizResult[]
 }
 
 model TeacherProfile {
@@ -48,6 +50,8 @@ model Course {
   gcrLink     String?
   description String?
   startDate   DateTime?
+  price       Float        @default(0)
+  pricingType String       @default("ONETIME") // ONETIME or SUBSCRIPTION
   createdAt   DateTime     @default(now())
   enrollments Enrollment[]
 }
@@ -164,6 +168,7 @@ model Quiz {
   isActive    Boolean        @default(true)
   createdAt   DateTime       @default(now())
   questions   QuizQuestion[]
+  results     QuizResult[]
 }
 
 model QuizQuestion {
@@ -172,5 +177,16 @@ model QuizQuestion {
   text          String
   options       String // JSON stringified array
   correctAnswer String
-  quiz          Quiz   @relation(fields: [quizId], references: [id])
+  quiz          Quiz         @relation(fields: [quizId], references: [id])
+}
+
+model QuizResult {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  quizId    Int
+  score     Int
+  total     Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  quiz      Quiz     @relation(fields: [quizId], references: [id])
 }

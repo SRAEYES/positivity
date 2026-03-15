@@ -166,28 +166,28 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary transition-colors">
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 active:bg-zinc-900 active:scale-95 transition-all border border-border">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-active:scale-90 transition-all">
                 <Book className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors">Vedic Science</h3>
-              <p className="text-foreground/60 leading-relaxed">Deep dive into the structural wisdom of the Vedas and Upanishads, decoded for logical understanding.</p>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-primary group-active:text-white transition-colors uppercase tracking-tight">Vedic Science</h3>
+              <p className="text-foreground/60 leading-relaxed group-active:text-white/40 transition-colors">Deep dive into the structural wisdom of the Vedas and Upanishads, decoded for logical understanding.</p>
             </div>
 
-            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
-              <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-secondary transition-colors">
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 active:bg-zinc-900 active:scale-95 transition-all border border-border">
+              <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-secondary group-active:scale-90 transition-all">
                 <Search className="w-8 h-8 text-secondary group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-secondary transition-colors">Sanskrit Roots</h3>
-              <p className="text-foreground/60 leading-relaxed">Master the language of the gods. Learn Sanskrit not just as a language, but as a vibrational tool for consciousness.</p>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-secondary group-active:text-white transition-colors uppercase tracking-tight">Sanskrit Roots</h3>
+              <p className="text-foreground/60 leading-relaxed group-active:text-white/40 transition-colors">Master the language of the gods. Learn Sanskrit not just as a language, but as a vibrational tool for consciousness.</p>
             </div>
 
-            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
-              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-accent transition-colors">
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 active:bg-zinc-900 active:scale-95 transition-all border border-border">
+              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-accent group-active:scale-90 transition-all">
                 <Users className="w-8 h-8 text-accent group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-accent transition-colors">Global Sangha</h3>
-              <p className="text-foreground/60 leading-relaxed">Connect with thousands of like-minded seekers from across the globe. Grow together in spirit and knowledge.</p>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-accent group-active:text-white transition-colors uppercase tracking-tight">Global Sangha</h3>
+              <p className="text-foreground/60 leading-relaxed group-active:text-white/40 transition-colors">Connect with thousands of like-minded seekers from across the globe. Grow together in spirit and knowledge.</p>
             </div>
           </div>
         </div>
