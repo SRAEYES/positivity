@@ -17,7 +17,103 @@ import {
     Tooltip, ResponsiveContainer, AreaChart, Area
 } from "recharts";
 
-const THEMES = [
+
+type Theme = {
+    id: string;
+    name: string;
+    color: string;
+    glow: string;
+    bg: string;
+};
+
+
+// Bhagavad Gita Slokas component (top-level, outside render)
+function BhagavadGitaSlokas() {
+        const [chapter, setChapter] = useState<number>(1);
+        const [versesCount, setVersesCount] = useState<number>(47); // default for chapter 1
+        const [slokas, setSlokas] = useState<any[]>([]);
+        const [loading, setLoading] = useState<boolean>(false);
+        const [error, setError] = useState<any>(null);
+
+    useEffect(() => {
+        setLoading(true);
+        setError(null);
+        fetch(`https://vedicscriptures.github.io/chapter/${chapter}`)
+            .then(res => res.json())
+            .then(data => {
+                setVersesCount(data.verses_count || 47);
+                const slokaPromises = [];
+                for (let i = 1; i <= (data.verses_count || 47); i++) {
+                    slokaPromises.push(
+                        fetch(`https://vedicscriptures.github.io/slok/${chapter}/${i}`).then(r => r.json())
+                    );
+                }
+                return Promise.all(slokaPromises);
+            })
+            .then(allSlokas => {
+                setSlokas(allSlokas);
+                setLoading(false);
+            })
+            .catch(e => {
+                setError("Failed to load slokas.");
+                setLoading(false);
+            });
+    }, [chapter]);
+
+    return (
+        <div className="space-y-12">
+            <div className="flex items-center gap-4 mb-8">
+                <label className="font-bold text-orange-900 dark:text-orange-400">Chapter:</label>
+                <select
+                    value={chapter}
+                    onChange={e => setChapter(Number(e.target.value))}
+                    className="rounded-xl border border-orange-300 px-4 py-2 text-lg font-bold bg-white dark:bg-zinc-900 text-orange-900 dark:text-orange-400"
+                >
+                    {Array.from({ length: 18 }, (_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                            {`Chapter ${i + 1}`}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            {loading ? (
+                <div className="text-center text-orange-500 font-bold text-xl">Loading slokas...</div>
+            ) : error ? (
+                <div className="text-center text-red-500 font-bold text-xl">{error}</div>
+            ) : (
+                <div className="space-y-16">
+                    {slokas.map((sloka, idx) => (
+                        <div key={sloka._id || idx} className="space-y-8 p-8 bg-white dark:bg-zinc-900 rounded-[3rem] border-l-8 border-orange-500 shadow-xl">
+                            <p className="text-3xl font-serif italic text-orange-900 dark:text-orange-200 leading-[1.3] drop-shadow-sm pl-8">
+                                {sloka.slok}
+                            </p>
+                            <div className="space-y-4">
+                                <p className="text-lg font-black tracking-tight text-orange-900 dark:text-orange-500 uppercase opacity-60 ml-1">Translation</p>
+                                <p className="text-xl font-medium leading-[1.8] text-foreground/80 first-letter:text-4xl first-letter:font-black first-letter:text-orange-500 first-letter:mr-2">
+                                    {sloka.siva?.et || sloka.purohit?.et || sloka.tej?.ht || sloka.transliteration || "No translation available."}
+                                </p>
+                                {sloka.siva?.ec && (
+                                    <details className="mt-2">
+                                        <summary className="cursor-pointer text-orange-500 font-bold">Sivananda Commentary</summary>
+                                        <div className="text-base text-foreground/60 mt-2 whitespace-pre-line">{sloka.siva.ec}</div>
+                                    </details>
+                                )}
+                                {sloka.rams?.hc && (
+                                    <details className="mt-2">
+                                        <summary className="cursor-pointer text-orange-500 font-bold">Ramsukhdas Commentary</summary>
+                                        <div className="text-base text-foreground/60 mt-2 whitespace-pre-line">{sloka.rams.hc}</div>
+                                    </details>
+                                )}
+                            </div>
+                            <div className="text-xs text-orange-400 mt-4">Verse {sloka.verse} • Chapter {sloka.chapter}</div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+const THEMES: Theme[] = [
     { id: "krishna", name: "Krishna", color: "bg-indigo-500", glow: "shadow-indigo-500/50", bg: "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?auto=format&fit=crop&q=80&w=800" },
     { id: "shiva", name: "Shiva", color: "bg-orange-500", glow: "shadow-orange-500/50", bg: "https://images.unsplash.com/photo-1599341620021-00627e1f4fc3?auto=format&fit=crop&q=80&w=800" },
     { id: "devi", name: "Devi", color: "bg-rose-500", glow: "shadow-rose-500/50", bg: "https://images.unsplash.com/photo-1594412852641-0f76378e1bc9?auto=format&fit=crop&q=80&w=800" },
@@ -717,19 +813,8 @@ export default function SadhanaNexus() {
                                                 <Button size="icon" variant="ghost" className="w-14 h-14 rounded-2xl hover:bg-orange-100 dark:hover:bg-zinc-800 transition-all"><Share2 className="w-6 h-6" /></Button>
                                             </div>
 
-                                            <div className="space-y-12">
-                                                <p className="text-5xl font-serif italic text-orange-900 dark:text-orange-200 leading-[1.3] drop-shadow-sm border-l-8 border-orange-500 pl-12">
-                                                    "dharmakṣetre kurukṣetre samavetā yuyutsavaḥ | <br />
-                                                    māmakāḥ pāṇḍavāścaiva kimakurvata sañjaya ||"
-                                                </p>
-
-                                                <div className="space-y-8">
-                                                    <p className="text-2xl font-black tracking-tight text-orange-900 dark:text-orange-500 uppercase opacity-60 ml-1">Translation & Purport</p>
-                                                    <p className="text-2xl font-medium leading-[1.8] text-foreground/80 first-letter:text-5xl first-letter:font-black first-letter:text-orange-500 first-letter:mr-2">
-                                                        King Dhritarashtra said: O Sanjaya, after my sons and the sons of Pandu assembled in the place of pilgrimage at Kurukshetra, desiring to fight, what did they do?
-                                                    </p>
-                                                </div>
-                                            </div>
+                                            {/* Bhagavad Gita Slokas Section (Dynamic) */}
+                                            <BhagavadGitaSlokas />
 
                                             <div className="pt-16 border-t border-orange-100 dark:border-zinc-800 flex flex-col sm:flex-row justify-between items-center gap-10 mt-auto">
                                                 <div className="flex items-center gap-4">
