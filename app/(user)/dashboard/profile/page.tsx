@@ -41,6 +41,41 @@ export default function ProfilePage() {
     fetchUserProfile();
   }, []);
 
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.7));
+        };
+      };
+    });
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -48,28 +83,27 @@ export default function ProfilePage() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-            const base64 = reader.result as string;
-            setSaving(true);
-            try {
-                const res = await fetch(`/api/user/${user.id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ ...formData, imageUrl: base64 }),
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    setUser(data.user);
-                    setFormData(data.user);
-                }
-            } catch (err) {
-                console.error("Image upload failed", err);
-            } finally {
-                setSaving(false);
+        setSaving(true);
+        try {
+            const compressedBase64 = await compressImage(file);
+            const res = await fetch(`/api/user/${user.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...formData, imageUrl: compressedBase64 }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setUser(data.user);
+                setFormData(data.user);
+                // Sync with localStorage
+                const stored = JSON.parse(localStorage.getItem("user") || "{}");
+                localStorage.setItem("user", JSON.stringify({ ...stored, imageUrl: data.user.imageUrl }));
             }
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            console.error("Image upload failed", err);
+        } finally {
+            setSaving(false);
+        }
     }
   };
 
@@ -87,8 +121,7 @@ export default function ProfilePage() {
         setUser(data.user);
         setIsEditing(false);
         const stored = JSON.parse(localStorage.getItem("user") || "{}");
-        stored.name = data.user.name;
-        localStorage.setItem("user", JSON.stringify(stored));
+        localStorage.setItem("user", JSON.stringify({ ...stored, name: data.user.name, imageUrl: data.user.imageUrl }));
       } else {
         alert("Failed to update profile");
       }

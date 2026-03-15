@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    return NextResponse.json({ message: "Login successful", user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+    return NextResponse.json({ message: "Login successful", user: { id: user.id, email: user.email, name: user.name, role: user.role, imageUrl: user.imageUrl } });
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
