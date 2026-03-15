@@ -38,7 +38,9 @@ export default function SplitLoginCard() {
             if (res.ok) {
                 const data = await res.json();
                 if (typeof window !== "undefined") {
-                  localStorage.setItem("user", JSON.stringify(data.user));
+                  const savedUser = { ...data.user };
+                  delete savedUser.imageUrl;
+                  localStorage.setItem("user", JSON.stringify(savedUser));
                   if (data.user.role === "admin") {
                     router.push("/admin/dashboard");
                   } else {
