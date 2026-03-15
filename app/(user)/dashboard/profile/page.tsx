@@ -96,8 +96,9 @@ export default function ProfilePage() {
                 setUser(data.user);
                 setFormData(data.user);
                 // Sync with localStorage
-                const stored = JSON.parse(localStorage.getItem("user") || "{}");
-                localStorage.setItem("user", JSON.stringify({ ...stored, imageUrl: data.user.imageUrl }));
+                const storedUser = { ...data.user };
+                delete storedUser.imageUrl;
+                localStorage.setItem("user", JSON.stringify(storedUser));
             }
         } catch (err) {
             console.error("Image upload failed", err);
@@ -120,8 +121,9 @@ export default function ProfilePage() {
         const data = await res.json();
         setUser(data.user);
         setIsEditing(false);
-        const stored = JSON.parse(localStorage.getItem("user") || "{}");
-        localStorage.setItem("user", JSON.stringify({ ...stored, name: data.user.name, imageUrl: data.user.imageUrl }));
+        const storedUser = { ...data.user };
+        delete storedUser.imageUrl;
+        localStorage.setItem("user", JSON.stringify(storedUser));
       } else {
         alert("Failed to update profile");
       }
