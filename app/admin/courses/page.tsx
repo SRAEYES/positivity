@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, Plus, Edit3, Trash2, Search, ArrowLeft, Loader2, Sparkles, Filter, MoreVertical, LogOut } from "lucide-react";
+import { BookOpen, Plus, Edit3, Trash2, Search, ArrowLeft, Loader2, Sparkles, Filter, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminCourses() {
-  const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   async function fetchCourses() {
     setLoading(true);
@@ -23,6 +24,11 @@ export default function AdminCourses() {
   useEffect(() => {
     fetchCourses();
   }, []);
+
+  const filteredCourses = courses.filter((c: any) => {
+    const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase());
+    return matchesSearch;
+  });
 
   async function deleteCourse(id: number) {
     if (!confirm("Are you certain you wish to dissolve this path of wisdom?")) return;
@@ -69,13 +75,6 @@ export default function AdminCourses() {
             >
                 <Plus className="w-5 h-5" /> Manifest New Path
             </button>
-            <button 
-                onClick={() => window.location.href = '/logout'}
-                className="flex items-center gap-2 text-foreground/40 text-[10px] font-black uppercase tracking-widest hover:text-red-500 transition-colors"
-                title="Depart Portal"
-            >
-                <LogOut className="w-4 h-4" /> Logout Session
-            </button>
         </motion.div>
       </div>
 
@@ -87,15 +86,14 @@ export default function AdminCourses() {
                 <input 
                     type="text" 
                     placeholder="Search the archives..." 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     className="w-full h-16 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[1.5rem] pl-16 pr-6 font-bold text-sm focus:outline-none focus:ring-4 focus:ring-accent/5 focus:border-accent/20 transition-all shadow-xl shadow-black/5"
                 />
             </div>
             <div className="flex gap-4 w-full md:w-auto">
                 <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 h-16 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] opacity-40 hover:opacity-100 transition-all">
                     <Filter className="w-4 h-4" /> Filter
-                </button>
-                <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 h-16 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] opacity-40 hover:opacity-100 transition-all">
-                    <MoreVertical className="w-4 h-4" /> Actions
                 </button>
             </div>
         </div>
@@ -108,7 +106,7 @@ export default function AdminCourses() {
         ) : (
             <div className="grid gap-6">
                 <AnimatePresence mode="popLayout">
-                    {courses.map((course: any, idx) => (
+                    {filteredCourses.map((course: any, idx) => (
                         <motion.div
                             key={course.id}
                             initial={{ opacity: 0, scale: 0.98, y: 10 }}
@@ -137,7 +135,7 @@ export default function AdminCourses() {
                             <div className="flex items-center gap-4">
                                 <div className="hidden lg:block px-8 py-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl text-center">
                                     <p className="text-[8px] font-black uppercase tracking-widest opacity-30 mb-1">Initiates</p>
-                                    <p className="text-sm font-black text-foreground">{course._count?.enrollments || 0} Seeker</p>
+                                    <p className="text-sm font-black text-foreground">{course._count?.enrollments || 0} Seekers</p>
                                 </div>
                                 <div className="flex gap-3">
                                     <button
@@ -156,12 +154,14 @@ export default function AdminCourses() {
                             </div>
                         </motion.div>
                     ))}
+                    {filteredCourses.length === 0 && (
+                        <div className="py-20 text-center opacity-30 italic font-bold">No paths found matching thy search.</div>
+                    )}
                 </AnimatePresence>
             </div>
         )}
       </div>
 
-      {/* Footer Info */}
       <div className="max-w-6xl mx-auto mt-20 text-center">
         <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-20 flex items-center justify-center gap-4">
             <Sparkles className="w-3 h-3" /> DharmaVeda Administrative Unit <Sparkles className="w-3 h-3" />

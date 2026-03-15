@@ -12,13 +12,18 @@ export async function GET(req: Request) {
 
     const userId = parseInt(userIdStr);
 
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
     const count = await prisma.notification.count({
       where: {
         OR: [
           { isGlobal: true },
           { userId: userId }
         ],
-        read: false
+        read: false,
+        createdAt: {
+          gte: twentyFourHoursAgo
+        }
       }
     });
 

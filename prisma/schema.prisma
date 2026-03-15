@@ -20,9 +20,23 @@ model User {
   parentRel   String?
   createdAt   DateTime     @default(now())
   role        String       @default("student")
+  streakCount Int          @default(0)
+  lastLogin   DateTime?
   enrollments Enrollment[]
   japaGoals   JapaGoal[]
   journals    SpiritualJournal[]
+  bookmarks   LibraryBookmark[]
+  perks       UserPerk[]
+}
+
+model TeacherProfile {
+  id            Int      @id @default(autoincrement())
+  name          String
+  qualifications String
+  experience    String
+  bio           String?
+  imageUrl      String?
+  updatedAt     DateTime @updatedAt
 }
 
 model Course {
@@ -70,6 +84,7 @@ model Notification {
   userId    Int?
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+  expiresAt DateTime?
 }
 
 model JapaGoal {
@@ -97,6 +112,65 @@ model SpiritualJournal {
   bookName   String
   pagesRead  Int
   notes      String?
+  mediaUrl   String?
+  mediaType  String? // image, voice
   date       DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id])
+}
+
+model LibraryBook {
+  id          Int      @id @default(autoincrement())
+  title       String
+  author      String?
+  coverUrl    String?
+  contentUrl  String? // for PDF or Markdown content
+  description String?
+  bookmarks   LibraryBookmark[]
+}
+
+model LibraryBookmark {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  page      Int?
+  chapter   String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  book      LibraryBook @relation(fields: [bookId], references: [id])
+}
+
+model Perk {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  type        String     @default("gift") // chocolate, gift, book, access
+  imageUrl    String?
+  unlockedBy  UserPerk[]
+}
+
+model UserPerk {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  perkId     Int
+  unlockedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  perk       Perk     @relation(fields: [perkId], references: [id])
+}
+
+model Quiz {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String?
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  questions   QuizQuestion[]
+}
+
+model QuizQuestion {
+  id            Int    @id @default(autoincrement())
+  quizId        Int
+  text          String
+  options       String // JSON stringified array
+  correctAnswer String
+  quiz          Quiz   @relation(fields: [quizId], references: [id])
 }

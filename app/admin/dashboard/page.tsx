@@ -2,12 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, BookOpen, GraduationCap, IndianRupee, Plus, Settings, Bell, Search, Loader2, ArrowUpRight, TrendingUp, BarChart3, LineChart as LineIcon, LogOut } from "lucide-react";
+import { Users, BookOpen, GraduationCap, IndianRupee, Plus, Settings, Bell, Search, Loader2, ArrowUpRight, TrendingUp, BarChart3, LineChart as LineIcon, LogOut, UserCircle2, Gamepad2, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
 export default function AdminDashboard() {
   const router = useRouter();
+  
+  const navItems = [
+    { icon: <UserCircle2 className="w-6 h-6" />, label: "Master Identity", href: "/admin/profile" },
+    { icon: <BookOpen className="w-6 h-6" />, label: "Wisdom Archives", href: "/admin/courses" },
+    { icon: <Bell className="w-6 h-6" />, label: "Manifest Update", href: "/admin/notifications" },
+    { icon: <Gamepad2 className="w-6 h-6" />, label: "Spiritual Arena", href: "/admin/games" },
+    { icon: <Trophy className="w-6 h-6" />, label: "Reward Center", href: "/admin/rewards" },
+    { icon: <LogOut className="w-6 h-6" />, label: "Depart Portal", href: "/logout", isLogout: true },
+  ];
+
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalCourses: 0,
@@ -68,7 +78,7 @@ export default function AdminDashboard() {
         <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex gap-4"
+            className="flex flex-wrap gap-4"
         >
             <button 
                 onClick={() => router.push("/admin/courses/create")}
@@ -76,27 +86,16 @@ export default function AdminDashboard() {
             >
                 <Plus className="w-5 h-5" /> Manifest Course
             </button>
-            <button 
-                onClick={() => router.push("/admin/courses")}
-                className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-accent hover:border-accent/40 transition-all"
-                title="Wisdom Archives"
-            >
-                <BookOpen className="w-6 h-6" />
-            </button>
-            <button 
-                onClick={() => router.push("/admin/notifications")}
-                className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-accent hover:border-accent/40 transition-all font-black"
-                title="Manifest Update"
-            >
-                <Bell className="w-6 h-6" />
-            </button>
-            <button 
-                onClick={() => router.push("/logout")}
-                className="flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-red-500 hover:border-red-500/40 transition-all"
-                title="Depart Portal"
-            >
-                <LogOut className="w-6 h-6" />
-            </button>
+            {navItems.map((item, index) => (
+                <button 
+                    key={index}
+                    onClick={() => router.push(item.href)}
+                    className={`flex items-center justify-center w-14 h-14 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-foreground/40 hover:text-accent hover:border-accent/40 transition-all ${item.isLogout ? 'hover:text-red-500 hover:border-red-500/40' : ''}`}
+                    title={item.label}
+                >
+                    {item.icon}
+                </button>
+            ))}
         </motion.div>
       </div>
 
@@ -118,30 +117,30 @@ export default function AdminDashboard() {
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
+                className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-10 rounded-[4rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
             >
-                <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
-                        <TrendingUp className="w-5 h-5 text-accent" /> Seeker Growth
+                <div className="flex items-center justify-between mb-10">
+                    <h3 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-4">
+                        <TrendingUp className="w-6 h-6 text-accent" /> Seeker Vitality
                     </h3>
-                    <div className="text-[10px] font-black uppercase tracking-widest opacity-20">Historical Flow</div>
+                    <div className="px-4 py-2 bg-accent/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-accent">Active Growth</div>
                 </div>
-                <div className="h-[300px] w-full mt-4">
+                <div className="h-[350px] w-full mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={analytics.growthTrend}>
                             <defs>
                                 <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#3F51B5" stopOpacity={0.4}/>
-                                    <stop offset="95%" stopColor="#3F51B5" stopOpacity={0}/>
+                                    <stop offset="5%" stopColor="#FF66CC" stopOpacity={0.6}/>
+                                    <stop offset="95%" stopColor="#FF66CC" stopOpacity={0}/>
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
                             <XAxis 
                                 dataKey="date" 
                                 axisLine={false} 
                                 tickLine={false} 
                                 tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B', opacity: 0.8 }}
-                                dy={10}
+                                dy={15}
                             />
                             <YAxis 
                                 axisLine={false}
@@ -152,16 +151,17 @@ export default function AdminDashboard() {
                                 contentStyle={{ 
                                     backgroundColor: '#000', 
                                     border: 'none', 
-                                    borderRadius: '16px', 
-                                    fontSize: '11px', 
+                                    borderRadius: '24px', 
+                                    fontSize: '12px', 
                                     fontWeight: '900', 
                                     color: '#fff',
-                                    padding: '12px 16px'
+                                    padding: '16px 24px',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
                                 }}
-                                itemStyle={{ color: '#fff' }}
-                                cursor={{ stroke: '#3F51B5', strokeWidth: 2 }}
+                                itemStyle={{ color: '#FF66CC' }}
+                                cursor={{ stroke: '#FF66CC', strokeWidth: 3 }}
                             />
-                            <Area type="monotone" dataKey="cumulative" stroke="#3F51B5" strokeWidth={4} fillOpacity={1} fill="url(#colorGrowth)" />
+                            <Area type="monotone" dataKey="cumulative" stroke="#FF66CC" strokeWidth={5} fillOpacity={1} fill="url(#colorGrowth)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
@@ -170,24 +170,30 @@ export default function AdminDashboard() {
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
+                className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-10 rounded-[4rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
             >
-                <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
-                        <BarChart3 className="w-5 h-5 text-emerald-500" /> Financial Flow
+                <div className="flex items-center justify-between mb-10">
+                    <h3 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-4">
+                        <BarChart3 className="w-6 h-6 text-orange-500" /> Dakshina Stream
                     </h3>
-                    <div className="text-[10px] font-black uppercase tracking-widest opacity-20">Dakshina Stream</div>
+                    <div className="px-4 py-2 bg-orange-500/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500">Revenue Flow</div>
                 </div>
-                <div className="h-[300px] w-full mt-4">
+                <div className="h-[350px] w-full mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={analytics.financialTrend}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
+                            <defs>
+                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#FF9933" stopOpacity={1}/>
+                                    <stop offset="95%" stopColor="#FF66CC" stopOpacity={1}/>
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
                             <XAxis 
                                 dataKey="date" 
                                 axisLine={false} 
                                 tickLine={false} 
                                 tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B', opacity: 0.8 }}
-                                dy={10}
+                                dy={15}
                             />
                             <YAxis 
                                 axisLine={false}
@@ -195,23 +201,19 @@ export default function AdminDashboard() {
                                 tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B', opacity: 0.5 }}
                             />
                             <Tooltip 
+                                cursor={{ fill: 'rgba(255,153,51,0.1)', radius: 15 }}
                                 contentStyle={{ 
                                     backgroundColor: '#000', 
                                     border: 'none', 
-                                    borderRadius: '16px', 
-                                    fontSize: '11px', 
+                                    borderRadius: '24px', 
+                                    fontSize: '12px', 
                                     fontWeight: '900', 
                                     color: '#fff',
-                                    padding: '12px 16px'
+                                    padding: '16px 24px',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
                                 }}
-                                itemStyle={{ color: '#fff' }}
-                                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
                             />
-                            <Bar dataKey="amount" radius={[10, 10, 0, 0]} barSize={40}>
-                                {analytics.financialTrend.map((entry: any, index: number) => (
-                                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#FF9933' : '#FF66CC'} />
-                                ))}
-                            </Bar>
+                            <Bar type="monotone" dataKey="amount" radius={[15, 15, 15, 15]} barSize={35} fill="url(#colorRevenue)" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -227,12 +229,18 @@ export default function AdminDashboard() {
                 viewport={{ once: true }}
                 className="lg:col-span-2 bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
             >
-                <div className="flex items-center justify-between mb-10 px-4">
-                    <h2 className="text-2xl font-black text-foreground tracking-tight">Recent Initiations</h2>
-                    <button className="text-accent text-xs font-black uppercase tracking-widest hover:underline flex items-center gap-2">
-                        View All <ArrowUpRight className="w-4 h-4" />
-                    </button>
+                <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="text-xl font-black text-foreground">Initiation Flux</h3>
+                  <p className="text-xs font-bold text-foreground/30 uppercase tracking-[0.2em] mt-1">Growth of the Sangha</p>
                 </div>
+                <button 
+                  onClick={() => router.push('/admin/enrollments')}
+                  className="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-2xl hover:bg-primary/10 hover:text-primary transition-all group"
+                >
+                  <ArrowUpRight className="w-5 h-5 group-hover:rotate-45 transition-transform" />
+                </button>
+              </div>
 
                 <div className="overflow-hidden">
                     <table className="w-full text-left">
