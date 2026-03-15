@@ -91,11 +91,6 @@ export default function AdminCourses() {
                     className="w-full h-16 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[1.5rem] pl-16 pr-6 font-bold text-sm focus:outline-none focus:ring-4 focus:ring-accent/5 focus:border-accent/20 transition-all shadow-xl shadow-black/5"
                 />
             </div>
-            <div className="flex gap-4 w-full md:w-auto">
-                <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 h-16 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] opacity-40 hover:opacity-100 transition-all">
-                    <Filter className="w-4 h-4" /> Filter
-                </button>
-            </div>
         </div>
 
         {loading ? (

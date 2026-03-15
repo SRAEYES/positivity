@@ -292,41 +292,8 @@ export default function AdminDashboard() {
                 </div>
             </motion.div>
 
-            {/* Quick Actions & Notifications */}
             <div className="space-y-10">
-                <motion.div 
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    className="bg-accent p-8 rounded-[3rem] text-white shadow-xl shadow-accent/30 relative overflow-hidden"
-                >
-                    <TrendingUp className="absolute -right-4 -bottom-4 w-40 h-40 opacity-10 rotate-12" />
-                    <h3 className="text-2xl font-black mb-4 tracking-tight">System Health</h3>
-                    <p className="text-white/60 text-sm font-medium mb-8 leading-relaxed">
-                        The platform is resonating harmoniously. All core systems operational.
-                    </p>
-                    <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_15px_rgba(52,211,153,0.8)]" />
-                        <span className="text-xs font-black uppercase tracking-widest">Resonance OK</span>
-                    </div>
-                </motion.div>
-
-                <motion.div 
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-white dark:bg-zinc-900/50 backdrop-blur-xl p-8 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-2xl shadow-black/5"
-                >
-                    <h3 className="text-xl font-black mb-8 tracking-tight flex items-center gap-3">
-                        <Bell className="w-5 h-5 text-accent" /> Announcements
-                    </h3>
-                    <div className="space-y-6">
-                        <AnnouncementItem title="New Moon Session" time="2h ago" type="System" />
-                        <AnnouncementItem title="Enrollment Surge" time="5h ago" type="Market" />
-                        <AnnouncementItem title="Server Cleansing" time="Yesterday" type="Maintenance" />
-                    </div>
-                </motion.div>
+                {/* Cleaned space for future expansions */}
             </div>
           </div>
 

@@ -6,12 +6,21 @@ export async function GET(req: Request) {
 
   const userId = Number(searchParams.get("userId"));
 
-  const enrollments = await prisma.enrollment.findMany({
+  const allEnrollments = await prisma.enrollment.findMany({
     where: { userId },
     include: {
       course: true,
     },
+    orderBy: { paid: 'desc' } // Prioritize paid ones
   });
 
-  return NextResponse.json({ enrollments });
+  // Deduplicate by courseId
+  const uniqueEnrollments = Array.from(
+    allEnrollments.reduce((map, item) => {
+      if (!map.has(item.courseId)) map.set(item.courseId, item);
+      return map;
+    }, new Map()).values()
+  );
+
+  return NextResponse.json({ enrollments: uniqueEnrollments });
 }

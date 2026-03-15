@@ -25,24 +25,54 @@ export async function POST(req: Request) {
     const order = await razorpay.orders.create(options);
 
     // Create enrollment and payment together properly
-    const enrollment = await prisma.enrollment.create({
-      data: {
-        userId,
-        courseId,
-        paid: false,
-        payment: {
-          create: {
-            provider: "razorpay",
-            providerId: order.id,
-            amount: amount,
-            status: "pending",
-          }
-        }
-      },
-      include: {
-        payment: true
-      }
+    // Check for existing enrollment
+    const existing = await prisma.enrollment.findFirst({
+      where: { userId, courseId },
+      include: { payment: true }
     });
+
+    if (existing && existing.paid) {
+      return NextResponse.json({ error: "Thy soul already walks this path." }, { status: 400 });
+    }
+
+    let enrollment;
+    if (existing) {
+      // Reuse existing pending enrollment, update payment with new order ID
+      enrollment = await prisma.enrollment.update({
+        where: { id: existing.id },
+        data: {
+          payment: {
+            update: {
+              where: { enrollmentId: existing.id },
+              data: {
+                providerId: order.id,
+                amount: amount,
+                status: "pending"
+              }
+            }
+          }
+        },
+        include: { payment: true }
+      });
+    } else {
+      // Create new
+      enrollment = await prisma.enrollment.create({
+        data: {
+          userId,
+          courseId,
+          paid: false,
+          payment: {
+            create: {
+              provider: "razorpay",
+              providerId: order.id,
+              amount: amount,
+              status: "pending",
+            }
+          }
+        },
+        include: { payment: true }
+      });
+    }
 
     return NextResponse.json({
       orderId: order.id,

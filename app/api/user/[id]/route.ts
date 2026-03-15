@@ -25,6 +25,7 @@ export async function GET(
         parentName: true,
         parentRel: true,
         role: true,
+        imageUrl: true,
         createdAt: true,
       },
     });
@@ -55,7 +56,7 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const { name, age, country, state, location, parentName, parentRel } = body;
+    const { name, age, country, state, location, parentName, parentRel, imageUrl } = body;
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -67,6 +68,7 @@ export async function PUT(
         location,
         parentName,
         parentRel,
+        imageUrl,
       },
     });
 
