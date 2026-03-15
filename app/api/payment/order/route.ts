@@ -11,8 +11,8 @@ export async function POST(req: Request) {
   try {
     const { userId, courseId, amount } = await req.json();
 
-    if (!userId || !courseId || !amount) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!userId || !courseId || amount === undefined) {
+      return NextResponse.json({ error: "Missing required fields (userId, courseId, or amount)" }, { status: 400 });
     }
 
     // Amount in Razorpay is in paise (1 INR = 100 paise)

@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       data: {
         userId,
         courseId,
-        paid: course.price === 0,
+        paid: !course.price || course.price === 0,
       },
     });
 
