@@ -257,26 +257,19 @@ export default function CoursesPage() {
 
                     <div className="mt-auto flex flex-col gap-4">
                       {enrolledCourses.includes(course.id) ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-4 text-primary bg-primary/10 px-6 py-3 rounded-2xl">
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1 flex items-center gap-4 text-primary bg-primary/10 px-6 py-4 rounded-3xl">
                              <Sparkles className="w-5 h-5" />
                              <span className="text-sm font-black uppercase tracking-tighter">Wisdom Path Enrolled</span>
                           </div>
                           
-                          <div className="flex gap-4">
-                            {course.wpLink && (
-                              <a href={course.wpLink} target="_blank" className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl text-xs font-black uppercase tracking-tighter hover:bg-primary hover:text-white transition-all">
-                                WhatsApp
-                              </a>
-                            )}
-                            <button 
-                              onClick={() => handleUnenroll(course.id)}
-                              className="w-12 h-12 flex items-center justify-center bg-destructive/10 text-destructive rounded-2xl hover:bg-destructive hover:text-white transition-all"
-                              title="Drop Course"
-                            >
-                              <XCircle className="w-5 h-5" />
-                            </button>
-                          </div>
+                          <button 
+                            onClick={() => handleUnenroll(course.id)}
+                            className="w-14 h-14 flex items-center justify-center bg-destructive/10 text-destructive rounded-3xl hover:bg-destructive hover:text-white transition-all shrink-0"
+                            title="Drop Course"
+                          >
+                            <XCircle className="w-6 h-6" />
+                          </button>
                         </div>
                       ) : (
                         <button

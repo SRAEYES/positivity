@@ -53,6 +53,7 @@ model Course {
   price       Float        @default(0)
   pricingType String       @default("ONETIME") // ONETIME or SUBSCRIPTION
   createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
   enrollments Enrollment[]
 }
 
