@@ -50,8 +50,8 @@ export default function ProfilePage() {
         img.src = event.target?.result as string;
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 800;
+          const MAX_WIDTH = 400;
+          const MAX_HEIGHT = 400;
           let width = img.width;
           let height = img.height;
 
@@ -167,8 +167,8 @@ export default function ProfilePage() {
             >
                 <div className="w-40 h-40 bg-white dark:bg-zinc-800 rounded-[3rem] p-1 shadow-2xl border-4 border-primary/20 relative overflow-hidden">
                     <div className="w-full h-full bg-primary/5 rounded-[2.8rem] flex items-center justify-center overflow-hidden">
-                        {user.imageUrl ? (
-                            <img src={user.imageUrl} className="w-full h-full object-cover" alt="Profile" />
+                        {user.id ? (
+                            <img src={`/api/user/image/${user.id}`} className="w-full h-full object-cover" alt="Profile" />
                         ) : (
                             <User className="w-20 h-20 text-primary opacity-30" />
                         )}

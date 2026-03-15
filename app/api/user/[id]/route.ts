@@ -25,7 +25,6 @@ export async function GET(
         parentName: true,
         parentRel: true,
         role: true,
-        imageUrl: true,
         createdAt: true,
       },
     });
