@@ -14,19 +14,13 @@ export async function GET(
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        age: true,
-        country: true,
-        state: true,
-        location: true,
-        parentName: true,
-        parentRel: true,
-        role: true,
-        createdAt: true,
-      },
+      include: {
+        perks: {
+          include: {
+            perk: true
+          }
+        }
+      }
     });
 
     if (!user) {

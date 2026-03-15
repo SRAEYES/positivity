@@ -38,6 +38,8 @@ model TeacherProfile {
   experience    String
   bio           String?
   imageUrl      String?
+  phone         String?
+  email         String?
   updatedAt     DateTime @updatedAt
 }
 
@@ -190,4 +192,36 @@ model QuizResult {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   quiz      Quiz     @relation(fields: [quizId], references: [id])
+}
+
+model VedicPuzzle {
+  id        Int      @id @default(autoincrement())
+  title     String
+  fullText  String
+  tiles     String   // JSON stringified array of tiles
+  createdAt DateTime @default(now())
+}
+
+model HistoryQuest {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  events      String   // JSON stringified array of events
+  createdAt   DateTime @default(now())
+}
+model DivineDeity {
+  id        Int      @id @default(autoincrement())
+  name      String
+  info      String
+  image     String
+  color     String   @default("from-primary to-secondary")
+  createdAt DateTime @default(now())
+}
+
+model SmartCard {
+  id        Int      @id @default(autoincrement())
+  sanskrit  String
+  english   String
+  example   String?
+  createdAt DateTime @default(now())
 }

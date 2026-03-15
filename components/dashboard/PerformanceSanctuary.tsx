@@ -32,7 +32,7 @@ export default function PerformanceSanctuary({ userId }: { userId: number }) {
     : 0;
 
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-[4rem] p-10 md:p-16 border border-zinc-100 dark:border-zinc-800 shadow-3xl space-y-12 overflow-hidden relative">
+    <div className="bg-white rounded-[4rem] p-10 md:p-16 border border-zinc-100 shadow-xl space-y-12 overflow-hidden relative">
         <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
             <Trophy className="w-64 h-64 rotate-12" />
         </div>

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Mail, Shield, MapPin, Globe, Home, Users, Edit3, Save, X, Sparkles, Loader2, Camera, Image as ImageIcon } from "lucide-react";
+import { User, Mail, Shield, MapPin, Globe, Home, Users, Edit3, Save, X, Sparkles, Loader2, Camera, Image as ImageIcon, Trophy, Gem } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
@@ -97,8 +97,8 @@ export default function ProfilePage() {
                 setFormData(data.user);
                 // Sync with localStorage
                 const storedUser = { ...data.user };
-                delete storedUser.imageUrl;
                 localStorage.setItem("user", JSON.stringify(storedUser));
+                window.location.reload(); // Force reload to refresh all image instances
             }
         } catch (err) {
             console.error("Image upload failed", err);
@@ -359,6 +359,38 @@ export default function ProfilePage() {
                 )}
             </AnimatePresence>
         </motion.div>
+
+        {/* Perks Section */}
+        {user.perks && user.perks.length > 0 && (
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-12 space-y-8"
+            >
+                <div className="flex items-center gap-6">
+                    <h2 className="text-2xl font-black uppercase tracking-tighter italic text-zinc-300">Divine <span className="text-primary italic">Blessings</span></h2>
+                    <div className="h-[1px] flex-1 bg-zinc-100 dark:bg-zinc-800" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {user.perks.map((up: any) => (
+                        <div key={up.id} className="bg-white dark:bg-zinc-800 p-6 rounded-[2.5rem] border border-zinc-100 dark:border-white/5 flex items-center gap-5 shadow-sm">
+                            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden">
+                                {up.perk.imageUrl ? (
+                                    <img src={up.perk.imageUrl} className="w-full h-full object-cover" />
+                                ) : (
+                                    <Trophy className="w-8 h-8 text-primary opacity-30" />
+                                )}
+                            </div>
+                            <div>
+                                <h4 className="font-black italic text-lg leading-tight">{up.perk.name}</h4>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-primary mt-1">{up.perk.type}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </motion.div>
+        )}
       </div>
     </div>
   );

@@ -203,10 +203,10 @@ export default function CreateCoursePage() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Classroom Nexus (GCR)</Label>
+                        <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Classroom Nexus (GCR - Optional)</Label>
                         <div className="relative">
                             <Globe className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 opacity-20" />
-                            <Input name="gcrLink" value={form.gcrLink} onChange={handleChange} className="h-14 pl-14 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-2xl font-bold" placeholder="https://classroom.google.com/..." required />
+                            <Input name="gcrLink" value={form.gcrLink} onChange={handleChange} className="h-14 pl-14 bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-2xl font-bold" placeholder="https://classroom.google.com/..." />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -219,16 +219,16 @@ export default function CreateCoursePage() {
                         </div>
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Pricing Model</Label>
-                            <div className="flex bg-zinc-50 dark:bg-zinc-950 rounded-2xl p-1 h-14">
+                            <div className="flex bg-zinc-50 dark:bg-zinc-950 rounded-2xl p-1.5 h-14 gap-1.5">
                                 {["ONETIME", "SUBSCRIPTION"].map((type) => (
                                     <button
                                         key={type}
                                         type="button"
                                         onClick={() => setForm({ ...form, pricingType: type })}
-                                        className={`flex-1 flex items-center justify-center gap-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${
+                                        className={`flex-1 flex items-center justify-center gap-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border-2 ${
                                             form.pricingType === type 
-                                            ? "bg-white dark:bg-zinc-900 text-accent shadow-sm border border-zinc-100 dark:border-zinc-800" 
-                                            : "text-foreground/30 hover:text-foreground/60"
+                                            ? "bg-white dark:bg-zinc-900 text-accent shadow-sm border-zinc-100 dark:border-zinc-800" 
+                                            : "text-foreground/30 hover:text-foreground/60 border-transparent"
                                         }`}
                                     >
                                         <Zap className={`w-3 h-3 ${form.pricingType === type ? "text-accent" : "opacity-30"}`} />

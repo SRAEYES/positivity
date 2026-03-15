@@ -2,34 +2,33 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Puzzle, CheckCircle2, RefreshCcw, Sparkles } from "lucide-react";
+import { Puzzle, CheckCircle2, RefreshCcw, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const PUZZLE_DATA = [
-    {
-        id: 1,
-        full: "Hare Krishna Hare Krishna Krishna Krishna Hare Hare Hare Rama Hare Rama Rama Rama Hare Hare",
-        tiles: ["Hare Krishna", "Hare Krishna", "Krishna Krishna", "Hare Hare", "Hare Rama", "Hare Rama", "Rama Rama", "Hare Hare"]
-    },
-    {
-        id: 2,
-        full: "Jaya Sri Krishna Chaitanya Prabhu Nityananda Sri Advaita Gadadhara Srivasadi Gaura Bhakta Vrinda",
-        tiles: ["Jaya Sri Krishna", "Chaitanya", "Prabhu Nityananda", "Sri Advaita", "Gadadhara", "Srivasadi", "Gaura Bhakta", "Vrinda"]
-    }
-];
-
-export default function VedicPuzzles() {
-    const [current, setCurrent] = useState(0);
+export default function VedicPuzzles({ puzzleId }: { puzzleId?: number }) {
+    const [puzzleData, setPuzzleData] = useState<any>(null);
     const [shuffled, setShuffled] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
     const [isCorrect, setIsCorrect] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const item = PUZZLE_DATA[current];
-        setShuffled([...item.tiles].sort(() => Math.random() - 0.5));
-        setSelected([]);
-        setIsCorrect(false);
-    }, [current]);
+        if (puzzleId) fetchPuzzle();
+    }, [puzzleId]);
+
+    const fetchPuzzle = async () => {
+        try {
+            const res = await fetch("/api/admin/games/puzzles");
+            const data = await res.json();
+            const puzzle = data.find((p: any) => p.id === puzzleId);
+            if (puzzle) {
+                const tiles = JSON.parse(puzzle.tiles);
+                setPuzzleData({...puzzle, tiles: tiles});
+                setShuffled([...tiles].sort(() => Math.random() - 0.5));
+            }
+        } catch (e) { console.error(e); }
+        finally { setLoading(false); }
+    };
 
     const handleTileClick = (tile: string, idx: number) => {
         const newSelected = [...selected, tile];
@@ -39,92 +38,64 @@ export default function VedicPuzzles() {
         remaining.splice(idx, 1);
         setShuffled(remaining);
 
-        if (newSelected.length === PUZZLE_DATA[current].tiles.length) {
-            if (newSelected.join(" ") === PUZZLE_DATA[current].tiles.join(" ")) {
+        if (newSelected.length === puzzleData.tiles.length) {
+            if (newSelected.join(" ").toLowerCase() === puzzleData.tiles.join(" ").toLowerCase()) {
                 setIsCorrect(true);
             }
         }
     };
 
     const reset = () => {
-        const item = PUZZLE_DATA[current];
-        setShuffled([...item.tiles].sort(() => Math.random() - 0.5));
+        setShuffled([...puzzleData.tiles].sort(() => Math.random() - 0.5));
         setSelected([]);
         setIsCorrect(false);
     };
 
+    if (loading) return <Loader2 className="animate-spin text-primary" />;
+    if (!puzzleData) return <p className="text-zinc-400 italic">The pieces of this puzzle have vanished.</p>;
+
     return (
-        <div className="bg-white dark:bg-zinc-900 rounded-[3rem] p-10 shadow-2xl border border-zinc-100 dark:border-zinc-800 space-y-10 min-h-[500px] flex flex-col justify-center">
+        <div className="bg-white rounded-[3rem] p-4 md:p-10 space-y-10 min-h-[500px] flex flex-col justify-center w-full max-w-2xl relative">
+            <button 
+                onClick={reset}
+                className="absolute top-8 right-8 w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-400 hover:text-secondary hover:bg-secondary/5 transition-all"
+                title="Retry Puzzle"
+            >
+                <RefreshCcw className="w-5 h-5" />
+            </button>
             <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto">
-                    <Puzzle className="w-8 h-8 text-indigo-500" />
-                </div>
-                <h3 className="text-3xl font-black">Arrange the <span className="text-indigo-500 italic">Sacred Sound</span></h3>
-                <p className="text-xs font-black uppercase tracking-widest opacity-40">Quest {current + 1} of {PUZZLE_DATA.length}</p>
+                <h3 className="text-3xl font-black italic tracking-tight">{puzzleData.title}</h3>
+                <p className="text-xs font-black uppercase tracking-widest opacity-40 italic">Restore the Divine Alignment</p>
             </div>
 
             <div className="space-y-6">
-                <div className="flex flex-wrap gap-3 p-8 bg-zinc-50 dark:bg-zinc-950 rounded-[2.5rem] border-2 border-dashed border-zinc-200 dark:border-zinc-800 min-h-[140px] items-center justify-center">
+                <div className="flex flex-wrap gap-3 p-8 bg-zinc-50 rounded-[2.5rem] border-2 border-dashed border-zinc-100 min-h-[140px] items-center justify-center">
                     <AnimatePresence>
                         {selected.map((tile, i) => (
-                            <motion.div
-                                key={`selected-${i}`}
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="px-6 py-3 bg-indigo-500 text-white rounded-xl font-black text-sm shadow-lg shadow-indigo-500/20"
-                            >
-                                {tile}
-                            </motion.div>
+                            <motion.div key={`selected-${i}-${tile}`} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="px-6 py-3 bg-secondary text-white rounded-xl font-black text-sm shadow-lg shadow-secondary/20 uppercase tracking-widest italic">{tile}</motion.div>
                         ))}
                     </AnimatePresence>
-                    {selected.length === 0 && <span className="text-foreground/20 font-black uppercase text-[10px] tracking-[0.2em]">Select tiles in order</span>}
+                    {selected.length === 0 && <span className="text-zinc-300 font-black uppercase text-[10px] tracking-[0.2em]">Select tiles in order</span>}
                 </div>
 
                 <div className="flex flex-wrap gap-3 justify-center">
-                    <AnimatePresence>
-                        {shuffled.map((tile, i) => (
-                            <motion.button
-                                key={`tile-${tile}-${i}`}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0, scale: 0 }}
-                                onClick={() => handleTileClick(tile, i)}
-                                className="px-6 py-4 bg-white dark:bg-zinc-800 rounded-xl font-bold border-2 border-zinc-100 dark:border-zinc-700 hover:border-indigo-500 transition-all text-sm"
-                            >
-                                {tile}
-                            </motion.button>
-                        ))}
-                    </AnimatePresence>
+                    {shuffled.map((tile, i) => (
+                        <motion.button key={`tile-${tile}-${i}`} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => handleTileClick(tile, i)} className="px-6 py-4 bg-white rounded-xl font-bold border-2 border-zinc-100 hover:border-secondary transition-all text-xs uppercase tracking-widest shadow-sm">{tile}</motion.button>
+                    ))}
                 </div>
             </div>
 
             {isCorrect && (
-                <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center space-y-6"
-                >
-                    <div className="flex items-center justify-center gap-2 text-emerald-500 font-black uppercase tracking-widest text-xs">
-                        <CheckCircle2 className="w-5 h-5" /> Divine Order Restored!
-                    </div>
-                    {current < PUZZLE_DATA.length - 1 ? (
-                        <Button onClick={() => setCurrent(current + 1)} className="bg-indigo-500 hover:bg-indigo-600 text-white h-14 px-10 rounded-2xl font-black shadow-xl shadow-indigo-500/20">
-                            Next Quest <Sparkles className="ml-2 w-4 h-4" />
-                        </Button>
-                    ) : (
-                        <Button onClick={reset} variant="outline" className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs">
-                             Restart Path <RefreshCcw className="ml-2 w-4 h-4" />
-                        </Button>
-                    )}
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-6">
+                    <div className="flex items-center justify-center gap-2 text-emerald-500 font-black uppercase tracking-widest text-xs"><CheckCircle2 className="w-5 h-5" /> Alignment Restored!</div>
+                    <Button onClick={() => window.location.reload()} className="bg-secondary text-white h-16 px-12 rounded-2xl font-black shadow-xl shadow-secondary/20">Return to Arena</Button>
                 </motion.div>
             )}
 
-            {!isCorrect && selected.length > 0 && selected.length === PUZZLE_DATA[current].tiles.length && (
+            {!isCorrect && selected.length === puzzleData.tiles.length && (
                 <div className="text-center space-y-4">
-                    <p className="text-rose-500 font-black uppercase tracking-widest text-[10px]">The sounds are out of alignment...</p>
-                    <Button onClick={reset} variant="ghost" className="text-indigo-500 font-black uppercase text-[10px] tracking-widest">Try Again</Button>
+                    <p className="text-rose-500 font-black uppercase tracking-widest text-[10px]">The sequence remains incomplete...</p>
+                    <Button onClick={reset} variant="ghost" className="text-secondary font-black uppercase text-[10px] tracking-widest">Try Again</Button>
                 </div>
             )}
         </div>

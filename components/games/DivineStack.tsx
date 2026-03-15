@@ -1,49 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Info, RefreshCw } from "lucide-react";
+import { Sparkles, Info, RefreshCw, Loader2 } from "lucide-react";
 
-const DEITIES = [
-  {
-    id: 1,
-    name: "Sri Krishna",
-    info: "The Supreme Personality of Godhead, Lord of the Universe and speaker of the Bhagavad Gita.",
-    image: "https://vms9.com/wp-content/uploads/2024/08/lord-krishna-images-hd-wallpaper-vms9-9.jpg",
-    color: "from-blue-600 to-indigo-900"
-  },
-  {
-    id: 2,
-    name: "Sri Rama",
-    info: "The Ideal King and embodiment of Dharma. Savior of Janaki and Lord of Ayodhya.",
-    image: "https://images.unsplash.com/photo-1614032151610-3367b9605658?auto=format&fit=crop&q=80&w=400",
-    color: "from-orange-500 to-red-700"
-  },
-  {
-    id: 3,
-    name: "Lord Shiva",
-    info: "The auspicious Mahadeva, Lord of Yogis and the source of the holy Ganges.",
-    image: "https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?auto=format&fit=crop&q=80&w=400",
-    color: "from-cyan-900 to-zinc-950"
-  },
-  {
-    id: 4,
-    name: "Srimati Radharani",
-    info: "The embodiment of Hladini Shakti and the supreme devotee of Lord Sri Krishna.",
-    image: "https://i.pinimg.com/736x/8f/7d/5a/8f7d5af8369689e478546199a6c9d81d.jpg",
-    color: "from-rose-400 to-pink-600"
-  },
-  {
-    id: 5,
-    name: "Narasimha Deva",
-    info: "The Half-Man Half-Lion incarnation of Lord Vishnu who protected Prahlada Maharaja.",
-    image: "https://m.media-amazon.com/images/I/71YyP9f8L8L._AC_UF1000,1000_QL80_.jpg",
-    color: "from-amber-600 to-red-900"
-  }
+// Default deities as fallback if API is empty
+const DEFAULT_DEITIES = [
+  { id: 1, name: "Sri Krishna", info: "The Supreme Personality of Godhead, speaker of the Bhagavad Gita and Lord of Dwarka.", image: "https://images.unsplash.com/photo-1609619385002-f40f1df66e12?w=400", color: "from-blue-600 to-indigo-900" },
+  { id: 2, name: "Sri Rama", info: "The ideal King and embodiment of Dharma. Avatar of Vishnu and Lord of Ayodhya.", image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400", color: "from-orange-500 to-red-700" },
+  { id: 3, name: "Lord Shiva", info: "The auspicious Mahadeva, Lord of Yogis and destroyer of all illusion.", image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400", color: "from-cyan-900 to-zinc-950" },
+  { id: 4, name: "Srimati Radharani", info: "The embodiment of divine love and the supreme devotee of Lord Sri Krishna.", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400", color: "from-rose-400 to-pink-600" },
+  { id: 5, name: "Narasimha Deva", info: "The half-man, half-lion avatar of Vishnu who protected the devotee Prahlada.", image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400", color: "from-amber-600 to-red-900" },
 ];
 
-export default function DivineStack() {
-  const [stack, setStack] = useState(DEITIES);
+interface DivineStackProps {
+  deities?: any[]; // Can be passed from parent (arena) if already fetched
+}
+
+export default function DivineStack({ deities: propDeities }: DivineStackProps) {
+  const [deities, setDeities] = useState<any[]>([]);
+  const [stack, setStack] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (propDeities && propDeities.length > 0) {
+      setDeities(propDeities);
+      setStack(propDeities);
+      setLoading(false);
+    } else {
+      fetchDeities();
+    }
+  }, [propDeities]);
+
+  const fetchDeities = async () => {
+    try {
+      const res = await fetch("/api/admin/games/deities");
+      const data = await res.json();
+      const list = Array.isArray(data) && data.length > 0 ? data : DEFAULT_DEITIES;
+      setDeities(list);
+      setStack(list);
+    } catch {
+      setDeities(DEFAULT_DEITIES);
+      setStack(DEFAULT_DEITIES);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const moveToEnd = () => {
     const newStack = [...stack];
@@ -52,56 +54,61 @@ export default function DivineStack() {
     setStack(newStack);
   };
 
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <Loader2 className="animate-spin text-primary w-8 h-8" />
+    </div>
+  );
+
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-[3rem] p-10 shadow-2xl border border-zinc-100 dark:border-zinc-800 space-y-10 min-h-[600px] flex flex-col items-center justify-center overflow-hidden">
-      <div className="text-center space-y-4">
-        <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
-          <Sparkles className="w-8 h-8 text-primary" />
+    <div className="bg-white rounded-[3rem] p-6 md:p-10 shadow-xl border border-zinc-100 space-y-8 min-h-[560px] flex flex-col items-center justify-center">
+      <div className="text-center space-y-3">
+        <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto">
+          <Sparkles className="w-7 h-7 text-indigo-600" />
         </div>
-        <h3 className="text-3xl font-black">Divine <span className="text-primary italic">Stack</span></h3>
-        <p className="text-xs font-black uppercase tracking-widest opacity-40 italic">Tap cards to unveil the Pantheon</p>
+        <h3 className="text-2xl font-black">Divine <span className="text-indigo-600 italic">Stack</span></h3>
+        <p className="text-xs font-black uppercase tracking-widest text-foreground/40 italic">Tap card to explore the Pantheon</p>
       </div>
 
-      <div className="relative w-72 h-[450px] mt-10">
+      <div className="relative w-72 h-[400px]">
         <AnimatePresence>
           {stack.slice(0, 3).reverse().map((deity, index) => {
-            const isTop = index === 2; // slice(0,3).reverse() makes index 2 the top card
+            const isTop = index === 2;
             return (
               <motion.div
                 key={deity.id}
                 layout
                 initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                animate={{ 
-                  scale: 0.8 + (index * 0.1), 
-                  opacity: 1, 
-                  y: -index * 20,
+                animate={{
+                  scale: 0.82 + (index * 0.09),
+                  opacity: 1,
+                  y: -index * 18,
                   zIndex: index,
-                  filter: isTop ? "blur(0px)" : `blur(${4 - index * 2}px)`
+                  filter: isTop ? "blur(0px)" : `blur(${(2 - index) * 1.5}px)`
                 }}
                 exit={{ x: 300, opacity: 0, rotate: 20 }}
                 onClick={isTop ? moveToEnd : undefined}
-                className={`absolute inset-0 bg-white dark:bg-zinc-800 rounded-[2.5rem] shadow-2xl border-4 border-zinc-100 dark:border-zinc-700 overflow-hidden cursor-pointer group transition-transform`}
+                className="absolute inset-0 bg-white rounded-[2.5rem] shadow-2xl border-2 border-zinc-100 overflow-hidden cursor-pointer"
               >
-                <div className={`h-1/2 bg-gradient-to-br ${deity.color} relative`}>
-                    <img 
-                      src={deity.image} 
-                      alt={deity.name}
-                      className="w-full h-full object-cover opacity-80 mix-blend-overlay"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white dark:from-zinc-800 to-transparent"></div>
+                <div className={`h-[55%] bg-gradient-to-br ${deity.color} relative`}>
+                  <img
+                    src={deity.image}
+                    alt={deity.name}
+                    className="w-full h-full object-cover opacity-70 mix-blend-overlay"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
                 </div>
-                
-                <div className="p-8 space-y-4 flex flex-col h-1/2 justify-between">
-                  <div className="space-y-2">
-                    <h4 className="text-2xl font-black tracking-tight">{deity.name}</h4>
-                    <p className="text-[10px] font-medium text-foreground/60 leading-relaxed italic">
-                      {deity.info}
-                    </p>
+                <div className="p-6 space-y-3 flex flex-col h-[45%] justify-between">
+                  <div>
+                    <h4 className="text-xl font-black tracking-tight">{deity.name}</h4>
+                    <p className="text-xs font-medium text-foreground/60 leading-relaxed italic mt-1">{deity.info}</p>
                   </div>
-                  
-                  <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-primary">
-                    <Info className="w-3 h-3" /> Tap to cycle
-                  </div>
+                  {isTop && (
+                    <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-indigo-500">
+                      <Info className="w-3 h-3" /> Tap to cycle
+                    </div>
+                  )}
                 </div>
               </motion.div>
             );
@@ -109,12 +116,12 @@ export default function DivineStack() {
         </AnimatePresence>
       </div>
 
-      <button 
-        onClick={() => setStack([...DEITIES])}
-        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-30 hover:opacity-100 transition-all mt-10"
-      >
-        <RefreshCw className="w-3 h-3" /> Reset Divine Order
-      </button>
+      <div className="flex items-center gap-6 mt-4">
+        <button onClick={() => setStack([...deities])} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground/30 hover:text-foreground/70 transition-all">
+          <RefreshCw className="w-3 h-3" /> Reset Divine Order
+        </button>
+        <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30">{stack.length} Deities</span>
+      </div>
     </div>
   );
 }

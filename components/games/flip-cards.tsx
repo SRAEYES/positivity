@@ -1,86 +1,128 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Zap, RefreshCcw, Sparkles, ChevronRight, ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Zap, Loader2 } from "lucide-react";
 
-const CARDS = [
-    { sanskrit: "Dharma", english: "Righteous Duty / Purpose" },
-    { sanskrit: "Karma", english: "Action and its Consequences" },
-    { sanskrit: "Bhakti", english: "Devotional Service / Love" },
-    { sanskrit: "Jnana", english: "Transcendental Knowledge" },
-    { sanskrit: "Moksha", english: "Liberation from Birth & Death" },
-    { sanskrit: "Seva", english: "Selfless Service" }
-];
+interface Card { id: number; sanskrit: string; english: string; example?: string | null; }
 
 export default function FlipCards() {
-    const [current, setCurrent] = useState(0);
-    const [isFlipped, setIsFlipped] = useState(false);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [current, setCurrent] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-    const next = () => {
-        setIsFlipped(false);
-        setTimeout(() => setCurrent((current + 1) % CARDS.length), 150);
-    };
+  useEffect(() => {
+    fetch("/api/admin/games/smartcards")
+      .then(r => r.json())
+      .then((data: Card[]) => { setCards(data); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
 
-    const prev = () => {
-        setIsFlipped(false);
-        setTimeout(() => setCurrent((current - 1 + CARDS.length) % CARDS.length), 150);
-    };
+  const go = (dir: 1 | -1) => {
+    setIsFlipped(false);
+    setTimeout(() => setCurrent((c) => (c + dir + cards.length) % cards.length), 150);
+  };
 
-    return (
-        <div className="bg-white dark:bg-zinc-900 rounded-[3rem] p-10 shadow-2xl border border-zinc-100 dark:border-zinc-800 space-y-12 min-h-[500px] flex flex-col items-center justify-center">
-            <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-rose-500/10 rounded-2xl flex items-center justify-center mx-auto text-rose-500">
-                    <Zap className="w-8 h-8" />
-                </div>
-                <h3 className="text-3xl font-black">Smart <span className="text-rose-500 italic">Learning</span></h3>
-                <p className="text-xs font-black uppercase tracking-widest opacity-40">Card {current + 1} of {CARDS.length} • Tap to Flip</p>
-            </div>
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[300px]">
+      <Loader2 className="animate-spin text-rose-500 w-8 h-8" />
+    </div>
+  );
 
-            <div 
-                className="w-full max-w-sm aspect-[4/5] perspective-1000 cursor-pointer group"
-                onClick={() => setIsFlipped(!isFlipped)}
-            >
-                <motion.div
-                    animate={{ rotateY: isFlipped ? 180 : 0 }}
-                    transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20 }}
-                    className="relative w-full h-full preserve-3d"
-                >
-                    {/* Front */}
-                    <div className="absolute inset-0 backface-hidden bg-gradient-to-br from-rose-400 to-rose-600 rounded-[3rem] p-12 flex flex-col items-center justify-center text-center shadow-2xl border-4 border-white/20">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60 mb-8">Sanskrit Word</h4>
-                        <p className="text-5xl font-black text-white tracking-tighter italic">{CARDS[current].sanskrit}</p>
-                        <motion.div 
-                            animate={{ y: [0, 5, 0] }}
-                            transition={{ repeat: Infinity, duration: 2 }}
-                            className="mt-12 text-white/40"
-                        >
-                            <Sparkles className="w-8 h-8" />
-                        </motion.div>
-                    </div>
+  if (cards.length === 0) return (
+    <p className="text-center text-zinc-400 italic">No cards found. Ask admin to add some!</p>
+  );
 
-                    {/* Back */}
-                    <div className="absolute inset-0 backface-hidden bg-white dark:bg-zinc-800 rounded-[3rem] p-12 flex flex-col items-center justify-center text-center shadow-2xl border-4 border-rose-500/20 rotate-y-180">
-                        <div className="rotate-y-180">
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500/40 mb-8">Meaning</h4>
-                            <p className="text-4xl font-black text-foreground tracking-tight leading-tight">{CARDS[current].english}</p>
-                            <div className="mt-12 p-3 bg-rose-500/10 rounded-full text-rose-500 flex items-center justify-center w-fit mx-auto">
-                                <Zap className="w-6 h-6" />
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-            </div>
+  const card = cards[current];
 
-            <div className="flex gap-6 w-full max-w-sm">
-                <Button variant="ghost" onClick={(e) => { e.stopPropagation(); prev(); }} className="flex-1 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 font-black uppercase tracking-widest text-[10px] gap-2">
-                    <ChevronLeft className="w-4 h-4" /> Previous
-                </Button>
-                <Button variant="ghost" onClick={(e) => { e.stopPropagation(); next(); }} className="flex-1 h-14 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 font-black uppercase tracking-widest text-[10px] gap-2 shadow-xl shadow-rose-500/30">
-                    Next Master <ChevronRight className="w-4 h-4" />
-                </Button>
-            </div>
+  return (
+    <div className="w-full flex flex-col items-center gap-8 py-4 select-none">
+      {/* Header */}
+      <div className="text-center space-y-1">
+        <div className="flex items-center justify-center gap-2">
+          <Zap className="w-4 h-4 text-rose-500" />
+          <h3 className="text-lg font-black tracking-tight">Smart Learning</h3>
         </div>
-    );
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">
+          Card {current + 1} of {cards.length} • Tap card to flip
+        </p>
+      </div>
+
+      {/* Progress dots */}
+      <div className="flex gap-2 flex-wrap justify-center max-w-xs">
+        {cards.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => { setIsFlipped(false); setTimeout(() => setCurrent(i), 150); }}
+            className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? "w-8 bg-rose-500" : "w-1.5 bg-zinc-200"}`}
+          />
+        ))}
+      </div>
+
+      {/* Card */}
+      <div
+        className="w-full max-w-md cursor-pointer"
+        style={{ perspective: "1200px" }}
+        onClick={() => setIsFlipped(!isFlipped)}
+      >
+        <motion.div
+          key={card.id}
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ duration: 0.55, type: "spring", stiffness: 300, damping: 28 }}
+          style={{ transformStyle: "preserve-3d", position: "relative" }}
+          className="w-full"
+        >
+          {/* FRONT */}
+          <div
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+            className="w-full rounded-3xl bg-gradient-to-br from-rose-500 to-rose-600 p-10 flex flex-col items-center justify-center gap-6 min-h-[280px] shadow-2xl shadow-rose-500/30"
+          >
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">Sanskrit Word</span>
+            <p className="text-6xl font-black text-white tracking-tight italic">{card.sanskrit}</p>
+            <div className="mt-4 px-4 py-2 rounded-full bg-white/15 text-[10px] font-black uppercase tracking-widest text-white/70">
+              Tap to reveal meaning →
+            </div>
+          </div>
+
+          {/* BACK */}
+          <div
+            style={{
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+              position: "absolute",
+              inset: 0,
+            }}
+            className="w-full rounded-3xl bg-white border-2 border-zinc-100 p-10 flex flex-col items-center justify-center gap-5 min-h-[280px] shadow-2xl"
+          >
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-400">Meaning</span>
+            <p className="text-3xl font-black text-zinc-900 tracking-tight text-center leading-snug">{card.english}</p>
+            {card.example && (
+              <>
+                <div className="w-12 h-0.5 bg-zinc-100 rounded-full" />
+                <p className="text-sm text-zinc-400 italic text-center leading-relaxed max-w-xs">"{card.example}"</p>
+              </>
+            )}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center gap-4 w-full max-w-md">
+        <button
+          onClick={() => go(-1)}
+          className="flex-1 flex items-center justify-center gap-2 h-14 rounded-2xl bg-zinc-100 hover:bg-zinc-200 font-black text-[11px] uppercase tracking-widest transition-all"
+        >
+          <ChevronLeft className="w-4 h-4" /> Previous
+        </button>
+        <button
+          onClick={() => go(1)}
+          className="flex-1 flex items-center justify-center gap-2 h-14 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-black text-[11px] uppercase tracking-widest shadow-lg shadow-rose-500/30 transition-all"
+        >
+          Next <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
 }

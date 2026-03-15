@@ -182,11 +182,11 @@ export default function SadhanaNexus() {
                         <motion.h1
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="text-6xl font-black text-foreground tracking-tighter"
+                            className="text-4xl md:text-5xl font-black text-foreground tracking-tighter"
                         >
                             Sadhana <span className="text-secondary italic">Nexus</span>
                         </motion.h1>
-                        <p className="text-foreground/40 font-black uppercase tracking-[0.3em] text-[10px] mt-2">Laboratory of the Soul</p>
+                        <p className="text-foreground/60 font-black uppercase tracking-[0.3em] text-[10px] mt-2">Laboratory of the Soul</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 justify-center">
@@ -340,7 +340,7 @@ export default function SadhanaNexus() {
                                         key={activeGoal?.id}
                                         initial={{ opacity: 0, scale: 0.98 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="relative overflow-hidden rounded-[4rem] border border-white dark:border-white/5 shadow-3xl group min-h-[600px] flex flex-col justify-end p-12 md:p-16"
+                                        className="relative overflow-hidden rounded-[4rem] border border-white dark:border-white/5 shadow-3xl group min-h-[450px] flex flex-col justify-end p-10 md:p-12"
                                     >
                                         <div className="absolute inset-0 z-0">
                                             <img src={selectedTheme.bg} className="w-full h-full object-cover transition-transform duration-[15s] group-hover:scale-110" />
@@ -370,7 +370,7 @@ export default function SadhanaNexus() {
                                                 <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-primary/20 backdrop-blur-xl border border-primary/40 text-primary text-[10px] font-black uppercase tracking-widest shadow-2xl">
                                                     <Sparkle className="w-4 h-4 animate-pulse" /> Sacred Invocation
                                                 </div>
-                                                <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter drop-shadow-2xl">{activeGoal?.mantraName}</h2>
+                                                <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter drop-shadow-2xl">{activeGoal?.mantraName}</h2>
                                             </div>
 
                                             <div className="flex flex-col sm:flex-row items-center gap-12">
@@ -392,10 +392,10 @@ export default function SadhanaNexus() {
                                                 <Button
                                                     onClick={handleAddRounds}
                                                     disabled={saving || viewMode === 'history'}
-                                                    className="h-28 px-14 bg-white text-black hover:bg-zinc-100 rounded-[3rem] font-black text-2xl shadow-3xl transition-all grow group/btn w-full sm:w-auto overflow-hidden relative"
+                                                    className="h-24 px-12 bg-white text-black hover:bg-zinc-100 rounded-[2.5rem] font-black text-xl shadow-3xl transition-all grow group/btn w-full sm:w-auto overflow-hidden relative"
                                                 >
                                                     {saving ? <Loader2 className="animate-spin" /> : (
-                                                        <span className="flex items-center gap-6">Manifest {tempRounds} Rounds <ArrowRight className="w-10 h-10 group-hover/btn:translate-x-3 transition-transform text-primary" /></span>
+                                                        <span className="flex items-center gap-6">Manifest {tempRounds} Rounds <ArrowRight className="w-8 h-8 group-hover/btn:translate-x-3 transition-transform text-primary" /></span>
                                                     )}
                                                     {viewMode === 'history' && <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center text-white text-[10px] font-black uppercase tracking-[0.4em]">Historical Gaze Only</div>}
                                                 </Button>
@@ -414,14 +414,14 @@ export default function SadhanaNexus() {
                                         <div className="absolute top-0 right-0 p-8">
                                             <Trophy className="w-10 h-10 text-primary opacity-20 group-active:text-white transition-colors" />
                                         </div>
-                                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-8 group-active:text-white/40 transition-colors">{viewMode === 'history' ? `Realization: ${selectedDate}` : "Spiritual Momentum"}</h3>
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60 mb-8 group-active:text-white/40 transition-colors">{viewMode === 'history' ? `Realization: ${selectedDate}` : "Spiritual Momentum"}</h3>
                                         <div className="space-y-10">
                                             <div className="flex justify-between items-end">
                                                 <div className="group-active:text-white transition-colors">
                                                     <div className="text-7xl font-black tracking-tighter tabular-nums">
                                                         {(viewMode === 'history' ? historyProgress : progress).filter(p => p.goalId === activeGoal?.id).reduce((acc, p) => acc + p.roundsCompleted, 0)}
                                                     </div>
-                                                    <p className="text-[10px] font-black uppercase tracking-widest opacity-30 mt-2">Rounds Manifested Today</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mt-2">Rounds Manifested Today</p>
                                                 </div>
                                                 <div className="text-primary font-black text-2xl tracking-tighter italic group-active:text-primary-foreground transition-colors">
                                                     {Math.min(100, Math.round((((viewMode === 'history' ? historyProgress : progress).filter(p => p.goalId === activeGoal?.id).reduce((acc, p) => acc + p.roundsCompleted, 0)) / (activeGoal?.dailyRoundsGoal || 1)) * 100))}%
@@ -469,7 +469,7 @@ export default function SadhanaNexus() {
                                             {historyProgress.filter(p => p.goalId === activeGoal?.id).length === 0 ? (
                                                 <div className="text-center py-10">
                                                      <Sparkle className="w-8 h-8 text-primary/10 mx-auto mb-4" />
-                                                     <p className="text-xs font-bold italic opacity-30">No mantras logged on this cycle.</p>
+                                                     <p className="text-xs font-bold italic text-foreground/60">No mantras logged on this cycle.</p>
                                                 </div>
                                             ) : (
                                                 <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 no-scrollbar">

@@ -28,7 +28,7 @@ export default function DivineBowl() {
     };
 
     return (
-        <div className="bg-white dark:bg-zinc-900 rounded-[3rem] p-10 shadow-2xl border border-zinc-100 dark:border-zinc-800 space-y-12 min-h-[500px] flex flex-col items-center justify-center text-center">
+        <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-zinc-100 space-y-12 min-h-[500px] flex flex-col items-center justify-center text-center">
             <div className="space-y-4">
                 <div className="w-16 h-16 bg-rose-500/10 rounded-2xl flex items-center justify-center mx-auto">
                     <Sparkles className="w-8 h-8 text-rose-500" />
