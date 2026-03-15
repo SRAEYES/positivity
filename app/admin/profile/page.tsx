@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { 
     PenTool, Save, ArrowLeft, Loader2, Sparkles, User, GraduationCap, Briefcase, FileText, Image as ImageIcon, Upload
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
