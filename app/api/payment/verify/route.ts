@@ -35,7 +35,12 @@ export async function POST(req: Request) {
         }),
       ]);
 
-      return NextResponse.json({ success: true, message: "Payment verified successfully" });
+      return NextResponse.json({
+        success: true,
+        message: "Payment verified successfully",
+        enrollmentId,
+        receiptPath: `/dashboard/receipt/${enrollmentId}`,
+      });
     } else {
       return NextResponse.json({ success: false, message: "Payment verification failed" }, { status: 400 });
     }

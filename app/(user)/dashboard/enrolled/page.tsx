@@ -139,6 +139,13 @@ export default function EnrolledCourses() {
                             Classroom
                           </a>
                         )}
+                        <a
+                          href={`/dashboard/receipt/${e.id}`}
+                          className="col-span-2 flex items-center justify-center gap-2 px-4 py-4 bg-secondary text-white rounded-2xl text-xs font-black uppercase tracking-tighter hover:opacity-95 transition-all"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          Payment Receipt
+                        </a>
                       </div>
                     ) : (
                       e.course.price === 0 ? (

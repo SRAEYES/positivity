@@ -16,6 +16,14 @@ export async function POST(req: Request) {
     const course = await prisma.course.findUnique({ where: { id: courseId } });
     if (!course) return NextResponse.json({ error: "Course not found" }, { status: 404 });
 
+    // Paid courses must go through the payment flow.
+    if (course.price && course.price > 0) {
+      return NextResponse.json(
+        { error: "Payment required. Please complete payment to enroll.", requiresPayment: true },
+        { status: 402 }
+      );
+    }
+
     const existing = await prisma.enrollment.findFirst({
       where: { userId, courseId },
     });
@@ -59,19 +67,22 @@ export async function DELETE(req: Request) {
 
     const existing = await prisma.enrollment.findFirst({
       where: { userId, courseId },
+      include: { payment: true },
     });
 
     if (!existing) {
       return NextResponse.json({ error: "Not enrolled" }, { status: 404 });
     }
 
-    await prisma.enrollment.delete({
-      where: { id: existing.id },
-    });
+    await prisma.$transaction([
+      prisma.payment.deleteMany({ where: { enrollmentId: existing.id } }),
+      prisma.enrollment.delete({ where: { id: existing.id } }),
+    ]);
 
     return NextResponse.json({ message: "Successfully unenrolled" });
   } catch (error) {
     console.error("De-enroll error:", error);
-    return NextResponse.json({ error: "Failed to de-enroll" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Failed to de-enroll";
+    return NextResponse.json({ error: "Failed to de-enroll", details: message }, { status: 500 });
   }
 }

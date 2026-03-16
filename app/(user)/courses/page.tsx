@@ -20,6 +20,7 @@ export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState<number[]>([]);
+  const [pendingCourses, setPendingCourses] = useState<Record<number, { enrollmentId: number }>>({});
 
   useEffect(() => {
     async function loadData() {
@@ -28,7 +29,9 @@ export default function CoursesPage() {
       try {
         const [coursesRes, enrollmentsRes] = await Promise.all([
           fetch("/api/courses"),
-          user.id ? fetch(`/api/enrollments?userId=${user.id}`).then(res => res.json()) : Promise.resolve({ enrollments: [] })
+          user.id
+            ? fetch(`/api/enrollments?userId=${user.id}&includePending=true`).then((res) => res.json())
+            : Promise.resolve({ enrollments: [] })
         ]);
 
         if (coursesRes.ok) {
@@ -37,8 +40,15 @@ export default function CoursesPage() {
         }
 
         if (enrollmentsRes.enrollments) {
-          // Track all enrollments to show proper status (Wise Path Enrolled)
-          setEnrolledCourses(enrollmentsRes.enrollments.map((e: any) => e.courseId) || []);
+          const paid = (enrollmentsRes.enrollments as any[])
+            .filter((e) => e?.paid)
+            .map((e) => e.courseId);
+          setEnrolledCourses(paid);
+
+          const pendingPairs = (enrollmentsRes.enrollments as any[])
+            .filter((e) => !e?.paid && e?.course?.price && e.course.price > 0)
+            .map((e) => [e.courseId, { enrollmentId: e.id }] as const);
+          setPendingCourses(Object.fromEntries(pendingPairs));
         }
       } catch (e) {
         console.error("Data load error:", e);
@@ -126,7 +136,15 @@ export default function CoursesPage() {
 
                 const verifyData = await verifyRes.json();
                 if (verifyRes.ok && verifyData.success) {
-                    setEnrolledCourses([...enrolledCourses, course.id]);
+                setPendingCourses((prev) => {
+                  const copy = { ...prev };
+                  delete copy[course.id];
+                  return copy;
+                });
+                setEnrolledCourses((prev) => (prev.includes(course.id) ? prev : [...prev, course.id]));
+
+                const receiptPath = verifyData.receiptPath || `/dashboard/receipt/${orderData.enrollmentId}`;
+                window.location.href = receiptPath;
                 } else {
                     alert("Payment verification failed. Please contact support.");
                 }
@@ -151,6 +169,11 @@ export default function CoursesPage() {
     }
   };
 
+  const handlePayNow = async (course: Course) => {
+    // Simply re-run the paid enroll flow (order API will upsert payment for the pending enrollment)
+    return handleEnroll(course);
+  };
+
   const handleUnenroll = async (courseId: number) => {
     if (!confirm("Are you sure you want to drop this path of wisdom?")) return;
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -161,8 +184,18 @@ export default function CoursesPage() {
     });
     if (res.ok) {
       setEnrolledCourses(enrolledCourses.filter(id => id !== courseId));
+      setPendingCourses((prev) => {
+        const copy = { ...prev };
+        delete copy[courseId];
+        return copy;
+      });
     } else {
-      alert("De-enrollment failed");
+      try {
+        const data = await res.json();
+        alert(data.error || "De-enrollment failed");
+      } catch {
+        alert("De-enrollment failed");
+      }
     }
   };
 
@@ -270,6 +303,27 @@ export default function CoursesPage() {
                           >
                             <XCircle className="w-6 h-6" />
                           </button>
+                        </div>
+                      ) : pendingCourses[course.id] ? (
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-center gap-3 bg-orange-100/60 dark:bg-orange-950/30 text-orange-700 dark:text-orange-300 px-6 py-4 rounded-3xl border border-orange-200 dark:border-orange-900/50">
+                            <Sparkles className="w-5 h-5 animate-pulse" />
+                            <span className="text-xs font-black uppercase tracking-widest">Payment Pending</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <button
+                              onClick={() => handlePayNow(course)}
+                              className="h-14 bg-primary text-white rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-primary/90 transition-colors"
+                            >
+                              Pay Now
+                            </button>
+                            <button
+                              onClick={() => handleUnenroll(course.id)}
+                              className="h-14 bg-destructive/10 text-destructive rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-destructive hover:text-white transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </div>
                       ) : (
                         <button

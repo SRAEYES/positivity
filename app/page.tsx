@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Search, Book, Users, Star, ArrowRight, Heart, Sparkles, Sun } from "lucide-react";
 
@@ -103,10 +104,13 @@ export default function Home() {
           className="w-full md:w-1/2 relative mt-12 md:mt-0"
         >
           <div className="w-full aspect-square bg-gradient-to-tr from-primary/10 via-secondary/10 to-accent/10 rounded-[3rem] md:rounded-[4rem] relative overflow-hidden shadow-2xl border border-white/10">
-            <img
-              src="https://images.unsplash.com/photo-1600632368481-0870c3abf0d6?auto=format&fit=crop&w=1200&q=80"
-              alt="Sanatana Dharma" 
-              className="w-full h-full object-cover opacity-95 transition-transform duration-1000 hover:scale-110"
+            <Image
+              src="/sanatana-dharma.png"
+              alt="Sanatana Dharma"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover opacity-95 transition-transform duration-1000 hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
             

@@ -5,6 +5,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const userIdRaw = searchParams.get("userId");
+    const includePending = searchParams.get("includePending") === "true";
     
     if (!userIdRaw || isNaN(Number(userIdRaw))) {
       return NextResponse.json({ enrollments: [] });
@@ -12,20 +13,29 @@ export async function GET(req: Request) {
 
     const userId = Number(userIdRaw);
 
+    if (!includePending) {
+      const paidEnrollments = await prisma.enrollment.findMany({
+        where: { userId, paid: true },
+        include: { course: true },
+        orderBy: { createdAt: "desc" },
+      });
+      return NextResponse.json({ enrollments: paidEnrollments });
+    }
+
     const allEnrollments = await prisma.enrollment.findMany({
       where: { userId },
-      include: {
-        course: true,
-      },
-      orderBy: { paid: 'desc' }
+      include: { course: true },
+      orderBy: [{ paid: "desc" }, { createdAt: "desc" }],
     });
 
-    // Deduplicate by courseId
+    // Deduplicate by courseId (prefer paid, then newest)
     const uniqueEnrollments = Array.from(
-      allEnrollments.reduce((map, item) => {
-        if (!map.has(item.courseId)) map.set(item.courseId, item);
-        return map;
-      }, new Map()).values()
+      allEnrollments
+        .reduce((map, item) => {
+          if (!map.has(item.courseId)) map.set(item.courseId, item);
+          return map;
+        }, new Map<number, (typeof allEnrollments)[number]>())
+        .values()
     );
 
     return NextResponse.json({ enrollments: uniqueEnrollments });
