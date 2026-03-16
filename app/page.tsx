@@ -41,12 +41,6 @@ export default function Home() {
           </h1>
         </div>
 
-        <div className="hidden md:flex gap-8 items-center font-medium">
-          <a href="#about" className="hover:text-primary transition-colors">Wisdom</a>
-          <a href="#courses" className="hover:text-primary transition-colors">Courses</a>
-          <a href="#community" className="hover:text-primary transition-colors">Sangha</a>
-        </div>
-
         <div className="flex gap-4 items-center">
           <button
             onClick={() => router.push("/login")}
@@ -58,13 +52,13 @@ export default function Home() {
             onClick={() => router.push("/register")}
             className="bg-primary text-white px-6 py-2.5 rounded-2xl font-bold shadow-lg shadow-primary/30 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all"
           >
-            Start Journey
+            Sign Up
           </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-16 pb-24 text-center md:text-left flex flex-col md:flex-row items-center gap-12">
+      <section className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-16 pb-20 text-center md:text-left flex flex-col md:flex-row items-center gap-12">
         
         <motion.div 
           initial="hidden"
@@ -72,48 +66,34 @@ export default function Home() {
           variants={containerVariants}
           className="md:w-1/2 relative z-20 w-full"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 text-secondary-foreground text-xs md:text-sm font-bold mb-6 border border-secondary/20">
-            <Sparkles className="w-4 h-4" />
-            <span>Discover Ancient Truths</span>
-          </motion.div>
-          
-          <motion.h1 
+          <motion.h1
             variants={itemVariants}
-            className="text-4xl md:text-8xl font-black leading-tight md:leading-[0.9] text-foreground mb-8 drop-shadow-sm"
+            className="text-4xl md:text-6xl font-black leading-tight text-foreground mb-5 drop-shadow-sm"
           >
-            Awaken the <br />
-            <span className="text-primary italic">Eternal Spirit</span> <br />
-            Within You.
+            <span className="italic text-primary">"धर्मो रक्षति रक्षितः"</span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             variants={itemVariants}
-            className="text-lg md:text-xl text-foreground/70 max-w-xl mb-10 leading-relaxed font-medium mx-auto md:mx-0"
+            className="text-lg md:text-xl text-foreground/70 max-w-xl mb-8 leading-relaxed font-medium mx-auto md:mx-0"
           >
-            Experience the profound wisdom of Sanatana Dharma through interactive courses in Sanskrit, Vedic philosophy, and spiritual discipline.
+            DharmaVeda is a modern spiritual learning space for Sanatana Dharma — slokas, pooja vidhana, Sanskrit roots, and a global sangha, all in one place.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <button
-              onClick={() => router.push("/courses")}
-              className="bg-accent text-white px-8 md:px-10 py-4 md:py-5 rounded-3xl text-lg font-black shadow-2xl shadow-accent/20 hover:shadow-accent/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
-            >
-              Explore Wisdom <ArrowRight className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => router.push("/register")}
-              className="bg-white/50 backdrop-blur-md border border-border px-10 py-5 rounded-3xl text-lg font-bold hover:bg-white transition-all"
-            >
-              Join the Sangha
-            </button>
+          <motion.div variants={itemVariants} className="flex flex-wrap gap-3 justify-center md:justify-start">
+            {["Slokas", "Pooja Vidhana", "Sanatana Dharma", "Sanskrit Roots", "Global Sangha"].map((label) => (
+              <div
+                key={label}
+                className="px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border border-border bg-white/60 dark:bg-zinc-900/40 backdrop-blur-md"
+              >
+                {label}
+              </div>
+            ))}
           </motion.div>
-          
-          <motion.div variants={itemVariants} className="mt-12 flex items-center justify-center md:justify-start gap-6 opacity-40 grayscale hover:grayscale-0 transition-all">
-            <div className="font-bold uppercase tracking-widest text-xs">As seen in</div>
-            <div className="text-xl font-bold">VedicTimes</div>
-            <div className="text-xl font-bold">BharatSpiritual</div>
-            <div className="text-xl font-bold">DharmaToday</div>
-          </motion.div>
+
+          <motion.p variants={itemVariants} className="mt-6 text-xs md:text-sm text-foreground/55 font-semibold">
+            Courses can be viewed anytime. Enrollment requires Sign In.
+          </motion.p>
         </motion.div>
 
         <motion.div 
@@ -123,10 +103,10 @@ export default function Home() {
           className="w-full md:w-1/2 relative mt-12 md:mt-0"
         >
           <div className="w-full aspect-square bg-gradient-to-tr from-primary/10 via-secondary/10 to-accent/10 rounded-[3rem] md:rounded-[4rem] relative overflow-hidden shadow-2xl border border-white/10">
-            <img 
-              src="https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-              alt="Meditation and Wisdom" 
-              className="w-full h-full object-cover opacity-90 transition-transform duration-1000 hover:scale-110"
+            <img
+              src="https://images.unsplash.com/photo-1600632368481-0870c3abf0d6?auto=format&fit=crop&w=1200&q=80"
+              alt="Sanatana Dharma" 
+              className="w-full h-full object-cover opacity-95 transition-transform duration-1000 hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
             
@@ -141,8 +121,8 @@ export default function Home() {
                   <Star className="w-4 h-4 md:w-5 md:h-5 fill-current" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white text-sm md:text-base">Featured Course</h4>
-                  <p className="text-white/60 text-[10px] md:text-xs">Bhagavad Gita Masterclass</p>
+                  <h4 className="font-bold text-white text-sm md:text-base">Browse Courses</h4>
+                  <p className="text-white/60 text-[10px] md:text-xs">Sign in to enroll</p>
                 </div>
               </div>
               <div className="w-full h-1.5 md:h-2 bg-white/10 rounded-full overflow-hidden">
@@ -157,37 +137,53 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Features Grid */}
-      <section id="about" className="py-32 bg-white/30 dark:bg-zinc-900/10 backdrop-blur-3xl">
+      {/* Topic Cards */}
+      <section id="about" className="py-24 bg-white/30 dark:bg-zinc-900/10 backdrop-blur-3xl">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-black mb-6">Wisdom for the Modern Seeker</h2>
-            <p className="text-lg text-foreground/60">We bridge the gap between ancient traditions and modern lifestyle, providing authentic knowledge with practical application.</p>
+            <h2 className="text-4xl md:text-5xl font-black mb-6">What you can explore</h2>
+            <p className="text-lg text-foreground/60">Simple, authentic learning paths — without the noise.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 active:bg-zinc-900 active:scale-95 transition-all border border-border">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-active:scale-90 transition-all">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary transition-all">
                 <Book className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-primary group-active:text-white transition-colors uppercase tracking-tight">Vedic Science</h3>
-              <p className="text-foreground/60 leading-relaxed group-active:text-white/40 transition-colors">Deep dive into the structural wisdom of the Vedas and Upanishads, decoded for logical understanding.</p>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors uppercase tracking-tight">Slokas</h3>
+              <p className="text-foreground/60 leading-relaxed">Read and reflect on timeless verses with meaning and context.</p>
             </div>
 
-            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 active:bg-zinc-900 active:scale-95 transition-all border border-border">
-              <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-secondary group-active:scale-90 transition-all">
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
+              <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-secondary transition-all">
+                <Heart className="w-8 h-8 text-secondary group-hover:text-white transition-colors" />
+              </div>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-secondary transition-colors uppercase tracking-tight">Pooja Vidhana</h3>
+              <p className="text-foreground/60 leading-relaxed">Step-by-step guidance for daily practice and sacred routines.</p>
+            </div>
+
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
+              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-accent transition-all">
+                <Sun className="w-8 h-8 text-accent group-hover:text-white transition-colors" />
+              </div>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-accent transition-colors uppercase tracking-tight">Sanatana Dharma</h3>
+              <p className="text-foreground/60 leading-relaxed">Understand the core ideas, values, and living tradition — clearly.</p>
+            </div>
+
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
+              <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-secondary transition-all">
                 <Search className="w-8 h-8 text-secondary group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-secondary group-active:text-white transition-colors uppercase tracking-tight">Sanskrit Roots</h3>
-              <p className="text-foreground/60 leading-relaxed group-active:text-white/40 transition-colors">Master the language of the gods. Learn Sanskrit not just as a language, but as a vibrational tool for consciousness.</p>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-secondary transition-colors uppercase tracking-tight">Sanskrit Roots</h3>
+              <p className="text-foreground/60 leading-relaxed">Build strong basics to pronounce, read, and understand key terms.</p>
             </div>
 
-            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 active:bg-zinc-900 active:scale-95 transition-all border border-border">
-              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-accent group-active:scale-90 transition-all">
-                <Users className="w-8 h-8 text-accent group-hover:text-white transition-colors" />
+            <div className="group p-10 bg-white dark:bg-zinc-800 rounded-[3rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all border border-border lg:col-span-2">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary transition-all">
+                <Users className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-accent group-active:text-white transition-colors uppercase tracking-tight">Global Sangha</h3>
-              <p className="text-foreground/60 leading-relaxed group-active:text-white/40 transition-colors">Connect with thousands of like-minded seekers from across the globe. Grow together in spirit and knowledge.</p>
+              <h3 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors uppercase tracking-tight">Global Sangha</h3>
+              <p className="text-foreground/60 leading-relaxed">Meet seekers worldwide, share progress, and stay consistent together.</p>
             </div>
           </div>
         </div>
@@ -218,24 +214,10 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-20 border-t border-border">
-        <div className="max-w-7xl mx-auto px-12 flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="flex items-center gap-2">
-            <Sun className="text-primary w-6 h-6" />
-            <h1 className="text-xl font-black text-primary tracking-tighter">
-              DharmaVeda
-            </h1>
-          </div>
-          
-          <div className="flex gap-10 text-sm font-bold opacity-60">
-            <a href="#" className="hover:text-primary">Wisdom</a>
-            <a href="#" className="hover:text-primary">Sangha</a>
-            <a href="#" className="hover:text-primary">Contact</a>
-            <a href="#" className="hover:text-primary">Terms</a>
-          </div>
-
-          <p className="text-sm opacity-40">
-            © {new Date().getFullYear()} DharmaVeda. Preserving Eternal Wisdom.
+      <footer className="py-10 border-t border-border">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
+          <p className="text-sm opacity-50 font-semibold">
+            © {new Date().getFullYear()} DharmaVeda. All rights reserved. Made by Chakka Sraeyes.
           </p>
         </div>
       </footer>
